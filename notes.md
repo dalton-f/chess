@@ -13,7 +13,7 @@ Project Roadmap:
 - Coordinate to index (functions)
 - Psuedo-legal move generation
 - Computer to make random moves
-- Generating a random FEN string
+- Generating a random legal FEN string
 - Evaluation of a position
 
 --
