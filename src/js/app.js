@@ -33,24 +33,33 @@ const FILES = {
 };
 
 const RANKS = {
-  1: 0,
-  2: 1,
-  3: 2,
-  4: 3,
-  5: 4,
-  6: 5,
-  7: 6,
-  8: 7,
+  1: 7,
+  2: 6,
+  3: 5,
+  4: 4,
+  5: 3,
+  6: 2,
+  7: 1,
+  8: 0,
 };
 
 // Set up constants for the bitwise masks so they are easier to use alongside the above piece notation
 const PIECE_COLOUR_MASK = 0b11;
 const PIECE_TYPE_MASK = 0b1111;
 
+// a8 = 21, a1 = 91, h8 = 28, h1 = 98
 const FetchIndexFromCoordinate = (coordinate) => {
   const [file, rank] = coordinate.split("");
 
   return 21 + FILES[file] + 10 * RANKS[rank];
+};
+
+const ExtractPieceData = (piece) => {
+  const pieceColour = (piece >> 4) & PIECE_COLOUR_MASK;
+
+  const pieceType = piece & PIECE_TYPE_MASK;
+
+  return [pieceColour, pieceType];
 };
 
 const LoadPositionFromFEN = (fen) => {
@@ -78,20 +87,20 @@ const LoadPositionFromFEN = (fen) => {
     K: PIECES.whiteKing,
   };
 
-  // A FEN string always describes a position starting from the 8th rank and our board representation starts from the first, so reverse the FEN to account for this
-  const ranks = fen.split("/").reverse();
+  // A FEN string always describes a position starting from the 8th rank
+  const ranks = fen.split("/");
 
   // Using 120 instead of 64 to allow for out of bound areas to be defined
   const board = new Array(120).fill(PIECES.outOfBounds);
 
   // Start population from the first rank as we reversed the FEN
-  let index = FetchIndexFromCoordinate("a1");
+  let index = FetchIndexFromCoordinate("a8");
 
   for (const rank of ranks) {
     for (const char of rank) {
       // If the value is a number
       if (!isNaN(char)) {
-        // Fill the board from index to index += char with PIECES.empty (0)
+        // Fill the board from index to index + char with PIECES.empty (0)
         board.fill(PIECES.empty, index, index + parseFloat(char));
 
         // Increase the index by the number
@@ -111,6 +120,89 @@ const LoadPositionFromFEN = (fen) => {
   return board;
 };
 
-const board = LoadPositionFromFEN(STARTING_FEN);
+const IsFriendlyPiece = (piece1, piece2) => {
+  const [colour1] = ExtractPieceData(piece1);
+  const [colour2] = ExtractPieceData(piece2);
 
-console.log(board, board[FetchIndexFromCoordinate("d1")]);
+  return colour1 === colour2;
+};
+
+const GenerateLegalMoves = (board) => {
+  // Each item of this array is an object that represents a piece on the board, which stores the piece, its starting square and an array of its target squares
+  const pieces = [];
+
+  // Loop over the board
+  for (let i = 0; i < board.length; i++) {
+    const tile = board[i];
+
+    // If a tile is not empty and not out of bounds this means it has a piece
+    if (tile !== PIECES.empty && tile !== PIECES.outOfBounds) {
+      // Get the piece type
+      const [_, pieceType] = ExtractPieceData(tile);
+
+      // Bishops
+      if (pieceType === 3) pieces.push(GenerateBishopMoves(board, i));
+    }
+  }
+
+  return pieces;
+};
+
+const GenerateBishopMoves = (board, index) => {
+  const offsets = [11, -11, 9, -9];
+  const startingIndex = index;
+
+  const piece = {
+    piece: board[startingIndex],
+    startSquare: index,
+    targetSquares: [],
+  };
+
+  // For every direction offset
+  for (const offset of offsets) {
+    // Reset the index for every offset loop
+    index = startingIndex;
+
+    // While still in the board
+    while (board[index] >= 0) {
+      index += offset;
+
+      if (startingIndex === 96) {
+        console.log("Offset: ", offset);
+
+        console.log(index, board[index]);
+      }
+
+      // If we have gone out of bounds, skip to the next offset
+      if (board[index] === PIECES.outOfBounds) break;
+
+      // If empty square, assume valid move and continue forward with this offset
+      if (board[index] === PIECES.empty) {
+        piece.targetSquares.push(index);
+
+        continue;
+      }
+
+      // Friendly piece on target square is blocking, so we cannot continue in this direction
+      if (IsFriendlyPiece(board[startingIndex], board[index])) break;
+
+      // Enemy piece is captured, so stop
+      if (!IsFriendlyPiece(board[startingIndex], board[index])) {
+        piece.targetSquares.push(index);
+        break;
+      }
+    }
+  }
+
+  return piece;
+};
+
+const board = LoadPositionFromFEN(
+  "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR",
+);
+
+const pieces = GenerateLegalMoves(board);
+
+// from 96 to 41, 52, 63, 74, 85
+
+console.log(pieces, board);
