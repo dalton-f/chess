@@ -54,13 +54,13 @@ const FetchIndexFromCoordinate = (coordinate) => {
   return 21 + FILES[file] + 10 * RANKS[rank];
 };
 
-// const ExtractPieceData = (piece) => {
-//   const pieceColour = (piece >> 4) & PIECE_COLOUR_MASK;
+const ExtractPieceData = (piece) => {
+  const pieceColour = (piece >> 4) & PIECE_COLOUR_MASK;
 
-//   const pieceType = piece & PIECE_TYPE_MASK;
+  const pieceType = piece & PIECE_TYPE_MASK;
 
-//   return [pieceColour, pieceType];
-// };
+  return [pieceColour, pieceType];
+};
 
 const LoadPositionFromFEN = (fen) => {
   // If a non-string value is passed in, obviously ignore it
@@ -172,85 +172,116 @@ const InitalizeGraphicalBoard = (board) => {
   }
 };
 
-// const IsFriendlyPiece = (piece1, piece2) => {
-//   const [colour1] = ExtractPieceData(piece1);
-//   const [colour2] = ExtractPieceData(piece2);
+const IsFriendlyPiece = (piece1, piece2) => {
+  const [colour1] = ExtractPieceData(piece1);
+  const [colour2] = ExtractPieceData(piece2);
 
-//   return colour1 === colour2;
-// };
+  return colour1 === colour2;
+};
 
-// const GenerateLegalMoves = (board) => {
-//   // Each item of this array is an object that represents a piece on the board, which stores the piece, its starting square and an array of its target squares
-//   const pieces = [];
+const GenerateLegalMoves = (board) => {
+  // Each item of this array is an object that represents a piece on the board, which stores the piece, its starting square and an array of its target squares
+  const pieces = [];
 
-//   // Loop over the board
-//   for (let i = 0; i < board.length; i++) {
-//     const tile = board[i];
+  // Loop over the board
+  for (let i = 0; i < board.length; i++) {
+    const tile = board[i];
 
-//     // If a tile is not empty and not out of bounds this means it has a piece
-//     if (tile !== PIECES.empty && tile !== PIECES.outOfBounds) {
-//       // Get the piece type
-//       const [_, pieceType] = ExtractPieceData(tile);
+    // If a tile is not empty and not out of bounds this means it has a piece
+    if (tile !== PIECES.empty && tile !== PIECES.outOfBounds) {
+      // Get the piece type
+      const [_, pieceType] = ExtractPieceData(tile);
 
-//       // Bishops
-//       if (pieceType === 3) pieces.push(GenerateBishopMoves(board, i));
-//     }
-//   }
+      // Bishops
+      if (pieceType === 3)
+        pieces.push(GenerateSlidingMoves(board, i, "bishop"));
 
-//   return pieces;
-// };
+      // Rooks
+      if (pieceType === 4) pieces.push(GenerateSlidingMoves(board, i, "rook"));
 
-// const GenerateBishopMoves = (board, index) => {
-//   const offsets = [11, -11, 9, -9];
-//   const startingIndex = index;
+      // Queens
+      if (pieceType === 5) pieces.push(GenerateSlidingMoves(board, i, "queen"));
+    }
+  }
 
-//   const piece = {
-//     piece: board[startingIndex],
-//     startSquare: index,
-//     targetSquares: [],
-//   };
+  return pieces;
+};
 
-//   // For every direction offset
-//   for (const offset of offsets) {
-//     // Reset the index for every offset loop
-//     index = startingIndex;
+const GenerateSlidingMoves = (board, index, pieceType) => {
+  // Store different offsets for the sliding pieces
+  const offsets = {
+    bishop: [11, -11, 9, -9],
+    rook: [10, -10, 1, -1],
+    queen: [11, -11, 9, -9, 10, -10, 1, -1],
+  };
 
-//     // While still in the board
-//     while (board[index] >= 0) {
-//       index += offset;
+  const startingIndex = index;
 
-//       // If we have gone out of bounds, skip to the next offset
-//       if (board[index] === PIECES.outOfBounds) break;
+  // Generate the object to be returned
+  const piece = {
+    piece: board[startingIndex],
+    startSquare: index,
+    targetSquares: [],
+  };
 
-//       // If empty square, assume valid move and continue forward with this offset
-//       if (board[index] === PIECES.empty) {
-//         piece.targetSquares.push(index);
+  // For every one of the offsets
+  for (const offset of offsets[pieceType]) {
+    let newIndex = startingIndex;
 
-//         continue;
-//       }
+    // While we are still inside the board
+    while (board[newIndex] >= 0) {
+      // Add the offset
+      newIndex += offset;
 
-//       // Friendly piece on target square is blocking, so we cannot continue in this direction
-//       if (IsFriendlyPiece(board[startingIndex], board[index])) break;
+      // If out of bounds, break
+      if (board[newIndex] === PIECES.outOfBounds) break;
 
-//       // Enemy piece is captured, so stop
-//       if (!IsFriendlyPiece(board[startingIndex], board[index])) {
-//         piece.targetSquares.push(index);
-//         break;
-//       }
-//     }
-//   }
+      // If empty, consider it a legal move
+      if (board[newIndex] === PIECES.empty) {
+        piece.targetSquares.push(newIndex);
+        continue;
+      }
 
-//   return piece;
-// };
+      // A friendly piece is blocking the movement in this direction so we cannot go any further
+      if (IsFriendlyPiece(board[startingIndex], board[newIndex])) break;
 
-// from 96 to 41, 52, 63, 74, 85
+      // We would capture an enemy piece and cannot go any further
+      if (!IsFriendlyPiece(board[startingIndex], board[newIndex])) {
+        piece.targetSquares.push(newIndex);
+        break;
+      }
+    }
+  }
 
-const board = LoadPositionFromFEN(
-  "r1bqkb1r/ppp1pppp/2n2n2/3p4/6P1/2N2P2/PPPPP2P/R1BQKBNR",
-);
+  return piece;
+};
 
+const VisualizeLegalMoves = (pieceMoves) => {
+  // Loop over all the pieces
+  for (const piece of pieceMoves) {
+    const moves = piece.targetSquares;
+
+    // Loop over all the legal moves
+    for (const target of moves) {
+      // Find the target square
+      const square = document.querySelector(`[data-square="${target}"]`);
+
+      // Give it a random colour
+      square.classList.add("bg-[#D36C50]");
+    }
+  }
+};
+
+// Convert FEN to board representation
+const board = LoadPositionFromFEN("4k1n1/8/8/p2Q2P1/8/5N2/8/4K2R");
+
+// Given the board representation, display the board
 InitalizeGraphicalBoard(board);
 
-// const pieces = GenerateLegalMoves(board);
+// Generate the legal moves in this position
+const pieceMoves = GenerateLegalMoves(board);
 
-// console.log(pieces);
+console.log(pieceMoves);
+
+// Visualize them on the graphical board
+VisualizeLegalMoves(pieceMoves);
