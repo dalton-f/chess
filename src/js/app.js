@@ -202,6 +202,12 @@ const GenerateLegalMoves = (board) => {
       // Ignore pieces of the opposite color
       if (pieceColor !== colorToMove) continue;
 
+      // Pawns
+      if (pieceType === 1) pieces.push(GeneratePawnMoves(board, i));
+
+      // Knights
+      if (pieceType === 2) pieces.push(GenerateKnightMoves(board, i));
+
       // Bishops
       if (pieceType === 3)
         pieces.push(GenerateSlidingMoves(board, i, "bishop"));
@@ -212,8 +218,8 @@ const GenerateLegalMoves = (board) => {
       // Queens
       if (pieceType === 5) pieces.push(GenerateSlidingMoves(board, i, "queen"));
 
-      // Knights
-      if (pieceType === 2) pieces.push(GenerateKnightMoves(board, i));
+      // Kings
+      if (pieceType === 6) pieces.push(GenerateKingMoves(board, i));
     }
   }
 
@@ -269,6 +275,70 @@ const GenerateSlidingMoves = (board, index, pieceType) => {
   return piece;
 };
 
+// TODO: En passant + promotion
+const GeneratePawnMoves = (board, index) => {
+  const startingIndex = index;
+
+  // If white pawn is between 81 - 88 it is on the starting rank, and if black is between 31 and 38 it is - this will be important for en passant rules later
+  const startingRanks = {
+    [PIECE_COLORS.white]: Array(8)
+      .fill(0)
+      .map((_, i) => 81 + i),
+    [PIECE_COLORS.black]: Array(8)
+      .fill(0)
+      .map((_, i) => 31 + i),
+  };
+
+  const isStartingRank = startingRanks[colorToMove].includes(startingIndex);
+
+  // Generate the object to be returned
+  const piece = {
+    piece: board[startingIndex],
+    startSquare: index,
+    targetSquares: [],
+  };
+
+  // Ensure the direction is set correctly based on the color to move
+  const offsetAdjustment = colorToMove === PIECE_COLORS.white ? -1 : 1;
+
+  const offset = 10 * offsetAdjustment;
+
+  const newIndex = startingIndex + offset;
+
+  const doubledIndex = newIndex + offset;
+
+  // If empty, consider it a legal move
+  if (board[newIndex] === PIECES.empty) {
+    piece.targetSquares.push(newIndex);
+  }
+
+  // The pawn hasn't moved yet so it can move two squares forward
+  if (board[doubledIndex] === PIECES.empty && isStartingRank) {
+    piece.targetSquares.push(doubledIndex);
+  }
+
+  // Check to see if an enemy piece is offset diagonally (11 or 9)
+  const diagonalOne = startingIndex + 11 * offsetAdjustment;
+  const diagonalTwo = startingIndex + 9 * offsetAdjustment;
+
+  // Ensure a pawn is not trying to capture outside of the board
+  if (
+    board[diagonalOne] !== PIECES.outOfBounds &&
+    !IsFriendlyPiece(board[startingIndex], board[diagonalOne])
+  ) {
+    piece.targetSquares.push(diagonalOne);
+  }
+
+  if (
+    board[diagonalTwo] !== PIECES.outOfBounds &&
+    !IsFriendlyPiece(board[startingIndex], board[diagonalTwo])
+  ) {
+    piece.targetSquares.push(diagonalTwo);
+  }
+
+  return piece;
+};
+
 const GenerateKnightMoves = (board, index) => {
   // Offsets based on the L-shaped movement
   const offsets = [21, -21, 19, -19, 12, -12, 8, -8];
@@ -306,6 +376,41 @@ const GenerateKnightMoves = (board, index) => {
   return piece;
 };
 
+const GenerateKingMoves = (board, index) => {
+  const offsets = [-10, 10, 1, -1, 11, -11, 9, -9];
+
+  const startingIndex = index;
+
+  // Generate the object to be returned
+  const piece = {
+    piece: board[startingIndex],
+    startSquare: index,
+    targetSquares: [],
+  };
+
+  for (const offset of offsets) {
+    let newIndex = startingIndex;
+
+    newIndex += offset;
+
+    // If out of bounds, skip to the next direction
+    if (board[newIndex] === PIECES.outOfBounds) continue;
+
+    // If empty, consider it a legal move
+    if (board[newIndex] === PIECES.empty) {
+      piece.targetSquares.push(newIndex);
+      continue;
+    }
+
+    // We would capture an enemy piece (otherwise assume it is a friendly piece so we cannot go to that square)
+    if (!IsFriendlyPiece(board[startingIndex], board[newIndex])) {
+      piece.targetSquares.push(newIndex);
+    }
+  }
+
+  return piece;
+};
+
 const VisualizeLegalMoves = (pieceMoves) => {
   // Loop over all the pieces
   for (const piece of pieceMoves) {
@@ -317,13 +422,15 @@ const VisualizeLegalMoves = (pieceMoves) => {
       const square = document.querySelector(`[data-square="${target}"]`);
 
       // Give it a random colour
-      square.classList.add("bg-[#D36C50]");
+      square.classList.add("!bg-[#D36C50]");
     }
   }
 };
 
 // Convert FEN to board representation
-const board = LoadPositionFromFEN(STARTING_FEN);
+const board = LoadPositionFromFEN(
+  "r1bqkb1r/ppp1pppp/2n2n2/3p4/6P1/2N2P2/PPPPP2P/R1BQKBNR",
+);
 
 // Given the board representation, display the board
 InitalizeGraphicalBoard(board);
