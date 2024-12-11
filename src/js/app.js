@@ -1,4 +1,4 @@
-// const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
 
 const PIECE_COLORS = {
   white: 0,
@@ -211,6 +211,9 @@ const GenerateLegalMoves = (board) => {
 
       // Queens
       if (pieceType === 5) pieces.push(GenerateSlidingMoves(board, i, "queen"));
+
+      // Knights
+      if (pieceType === 2) pieces.push(GenerateKnightMoves(board, i));
     }
   }
 
@@ -266,6 +269,43 @@ const GenerateSlidingMoves = (board, index, pieceType) => {
   return piece;
 };
 
+const GenerateKnightMoves = (board, index) => {
+  // Offsets based on the L-shaped movement
+  const offsets = [21, -21, 19, -19, 12, -12, 8, -8];
+
+  const startingIndex = index;
+
+  // Generate the object to be returned
+  const piece = {
+    piece: board[startingIndex],
+    startSquare: index,
+    targetSquares: [],
+  };
+
+  for (const offset of offsets) {
+    // Knights can only move to one square at any point, so we don't need to loop here
+    let newIndex = startingIndex;
+
+    newIndex += offset;
+
+    // If out of bounds, skip to the next direction
+    if (board[newIndex] === PIECES.outOfBounds) continue;
+
+    // If empty, consider it a legal move
+    if (board[newIndex] === PIECES.empty) {
+      piece.targetSquares.push(newIndex);
+      continue;
+    }
+
+    // We would capture an enemy piece (otherwise assume it is a friendly piece so we cannot go to that square)
+    if (!IsFriendlyPiece(board[startingIndex], board[newIndex])) {
+      piece.targetSquares.push(newIndex);
+    }
+  }
+
+  return piece;
+};
+
 const VisualizeLegalMoves = (pieceMoves) => {
   // Loop over all the pieces
   for (const piece of pieceMoves) {
@@ -283,9 +323,7 @@ const VisualizeLegalMoves = (pieceMoves) => {
 };
 
 // Convert FEN to board representation
-const board = LoadPositionFromFEN(
-  "r1bqk1nr/pp1pppbp/2n3p1/1Bp5/4P3/2N2N2/PPPP1PPP/R1BQK2R",
-);
+const board = LoadPositionFromFEN(STARTING_FEN);
 
 // Given the board representation, display the board
 InitalizeGraphicalBoard(board);
