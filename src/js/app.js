@@ -1,4 +1,9 @@
-const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+// const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+
+const PIECE_COLORS = {
+  white: 0,
+  black: 2,
+};
 
 // Set up multiple definitions here so that we avoid using magic numbers + the code is slightly easier to understand
 const PIECES = {
@@ -46,6 +51,8 @@ const RANKS = {
 // Set up constants for the bitwise masks so they are easier to use alongside the above piece notation
 const PIECE_COLOUR_MASK = 0b11;
 const PIECE_TYPE_MASK = 0b1111;
+
+let colorToMove = PIECE_COLORS.white;
 
 // a8 = 21, a1 = 91, h8 = 28, h1 = 98
 const FetchIndexFromCoordinate = (coordinate) => {
@@ -190,7 +197,10 @@ const GenerateLegalMoves = (board) => {
     // If a tile is not empty and not out of bounds this means it has a piece
     if (tile !== PIECES.empty && tile !== PIECES.outOfBounds) {
       // Get the piece type
-      const [_, pieceType] = ExtractPieceData(tile);
+      const [pieceColor, pieceType] = ExtractPieceData(tile);
+
+      // Ignore pieces of the opposite color
+      if (pieceColor !== colorToMove) continue;
 
       // Bishops
       if (pieceType === 3)
@@ -273,7 +283,9 @@ const VisualizeLegalMoves = (pieceMoves) => {
 };
 
 // Convert FEN to board representation
-const board = LoadPositionFromFEN("4k1n1/8/8/p2Q2P1/8/5N2/8/4K2R");
+const board = LoadPositionFromFEN(
+  "r1bqk1nr/pp1pppbp/2n3p1/1Bp5/4P3/2N2N2/PPPP1PPP/R1BQK2R",
+);
 
 // Given the board representation, display the board
 InitalizeGraphicalBoard(board);
