@@ -2,7 +2,7 @@ import { LoadPositionFromFEN } from "./components/core/BoardRepresentation/Board
 
 import {
   InitalizeGraphicalBoard,
-  VisualizeLegalMoves,
+  // VisualizeLegalMoves,
 } from "./components/core/BoardRendering/BoardRenderer.js";
 
 import { GenerateLegalMoves } from "./components/core/MoveGeneration/MoveGenerator.js";
@@ -19,7 +19,7 @@ InitalizeGraphicalBoard(board);
 const pieceMoves = GenerateLegalMoves(board);
 
 // Visualize them on the graphical board
-VisualizeLegalMoves(pieceMoves);
+// VisualizeLegalMoves(pieceMoves);
 
 // ------- Temporary code below ------------
 const totalLegalMoves = pieceMoves.reduce(
