@@ -1,14 +1,6 @@
 import { PIECES } from "../../utils/defs";
 
-import {
-  FetchIndexFromCoordinate,
-  ExtractPieceData,
-} from "../../utils/helpers";
-
-export const pieceIndexes = {
-  0: [],
-  2: [],
-};
+import { FetchIndexFromCoordinate } from "../../utils/helpers";
 
 export const LoadPositionFromFEN = (fen) => {
   // If a non-string value is passed in, obviously ignore it
@@ -65,24 +57,5 @@ export const LoadPositionFromFEN = (fen) => {
     index += 2;
   }
 
-  UpdatePieceIndexes(board);
-
   return board;
-};
-
-// Always have the ability to track where each piece is located on the board
-const UpdatePieceIndexes = (board) => {
-  // Loop over the board
-  for (let i = 0; i < board.length; i++) {
-    const char = board[i];
-
-    // If a tile has a piece
-    if (char !== PIECES.empty && char !== PIECES.outOfBounds) {
-      // Fetch the colour
-      const color = ExtractPieceData(char)[0];
-
-      // Add to corresponding array of indexes
-      pieceIndexes[color].push(i);
-    }
-  }
 };

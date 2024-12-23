@@ -2,8 +2,6 @@ import { ExtractPieceData } from "../../utils/helpers";
 
 import { PIECES, PIECE_COLORS } from "../../utils/defs";
 
-import { pieceIndexes } from "../BoardRepresentation/BoardRepresentation";
-
 // eslint-disable-next-line prefer-const
 let colorToMove = PIECE_COLORS.white;
 
@@ -14,12 +12,9 @@ const IsFriendlyPiece = (piece1, piece2) => {
   return colour1 === colour2;
 };
 
-export const GenerateLegalMoves = (board) => {
+export const GeneratePsuedoLegalMoves = (board) => {
   // Each item of this array is an object that represents a piece on the board, which stores the piece, its starting square and an array of its target squares
-  const pieces = [];
-
-  // Use the piecesIndexes array of the color to move to save some computation and directly check the squares that have a piece of the color to move
-  const pieceIndexesToMove = pieceIndexes[colorToMove];
+  const pieceMoves = [];
 
   const PIECE_TYPES = {
     PAWN: 1,
@@ -31,44 +26,43 @@ export const GenerateLegalMoves = (board) => {
   };
 
   // Loop over the board
-  for (let i = 0; i < pieceIndexesToMove.length; i++) {
-    const tile = board[pieceIndexesToMove[i]];
+  for (let i = 0; i < board.length; i++) {
+    const tile = board[i];
+
+    // Ignore blank squares or out of bounds squares
+    if (tile === PIECES.empty || tile === PIECES.outOfBounds) continue;
 
     // Get the piece type
-    const pieceType = ExtractPieceData(tile)[1];
+    const [pieceColor, pieceType] = ExtractPieceData(tile);
+
+    if (pieceColor !== colorToMove) continue;
 
     // Each of the piece movement generation functions take the current board representation and the index of the piece to move
     switch (pieceType) {
       case PIECE_TYPES.PAWN:
-        pieces.push(GeneratePawnMoves(board, pieceIndexesToMove[i]));
+        pieceMoves.push(GeneratePawnMoves(board, i));
         break;
       case PIECE_TYPES.KNIGHT:
-        pieces.push(GenerateKnightMoves(board, pieceIndexesToMove[i]));
+        pieceMoves.push(GenerateKnightMoves(board, i));
         break;
       case PIECE_TYPES.BISHOP:
-        pieces.push(
-          GenerateSlidingMoves(board, pieceIndexesToMove[i], "diagonal"),
-        );
+        pieceMoves.push(GenerateSlidingMoves(board, i, "diagonal"));
         break;
       case PIECE_TYPES.ROOK:
-        pieces.push(
-          GenerateSlidingMoves(board, pieceIndexesToMove[i], "orthogonal"),
-        );
+        pieceMoves.push(GenerateSlidingMoves(board, i, "orthogonal"));
         break;
       case PIECE_TYPES.QUEEN:
-        pieces.push(
-          GenerateSlidingMoves(board, pieceIndexesToMove[i], "octolinear"),
-        );
+        pieceMoves.push(GenerateSlidingMoves(board, i, "octolinear"));
         break;
       case PIECE_TYPES.KING:
-        pieces.push(GenerateKingMoves(board, pieceIndexesToMove[i]));
+        pieceMoves.push(GenerateKingMoves(board, i));
         break;
       default:
         break;
     }
   }
 
-  return pieces;
+  return pieceMoves;
 };
 
 const GenerateSlidingMoves = (board, index, pieceType) => {
