@@ -5,6 +5,13 @@ import { PIECES, PIECE_COLORS } from "../../utils/defs";
 // eslint-disable-next-line prefer-const
 let colorToMove = PIECE_COLORS.white;
 
+/**
+ * Checks if two chess pieces are of the same colour.
+ *
+ * @param {number} piece1 - The first chess piece.
+ * @param {number} piece2 - The second chess piece.
+ * @returns {Boolean} True if both pieces are of the same colour, false otherwise.
+ */
 const IsFriendlyPiece = (piece1, piece2) => {
   const [colour1] = ExtractPieceData(piece1);
   const [colour2] = ExtractPieceData(piece2);
@@ -12,6 +19,12 @@ const IsFriendlyPiece = (piece1, piece2) => {
   return colour1 === colour2;
 };
 
+/**
+ * Generates an array of pseudo-legal moves for each piece on the board.
+ *
+ * @param {Array} board - The current state of the chess board.
+ * @returns {Array<Object>} pieceMoves - An array of objects, each representing a piece on the board with its possible moves.
+ */
 export const GeneratePsuedoLegalMoves = (board) => {
   // Each item of this array is an object that represents a piece on the board, which stores the piece, its starting square and an array of its target squares
   const pieceMoves = [];
@@ -65,6 +78,16 @@ export const GeneratePsuedoLegalMoves = (board) => {
   return pieceMoves;
 };
 
+/**
+ * Generates all psuedo-legal possible moves for a sliding piece on a chessboard.
+ *
+ * @description
+ * The sliding pieces are the bishop, rook, and queen as their movement logic is reused dependent on the direction they move in.
+ *
+ * @param {number[]} board - An array of integers representing the current state of the chessboard.
+ * @param {number} index - The current index of the king piece on the board.
+ * @returns {Object} An object containing the king piece, its starting square, and an array of target squares it can move to.
+ */
 const GenerateSlidingMoves = (board, index, pieceType) => {
   // Store different offsets for the sliding pieces
   const offsets = {
@@ -114,7 +137,13 @@ const GenerateSlidingMoves = (board, index, pieceType) => {
   return piece;
 };
 
-// TODO: En passant
+/**
+ * Generates all psuedo-legal possible moves for a pawn on a chessboard.
+ *
+ * @param {number[]} board - An array of integers representing the current state of the chessboard.
+ * @param {number} index - The current index of the king piece on the board.
+ * @returns {Object} An object containing the king piece, its starting square, and an array of target squares it can move to.
+ */
 const GeneratePawnMoves = (board, index) => {
   const startingIndex = index;
 
@@ -151,6 +180,8 @@ const GeneratePawnMoves = (board, index) => {
     piece.targetSquares.push(newIndex);
   }
 
+  // TODO: Write logic for the en passant rule
+
   // The pawn hasn't moved yet so it can move two squares forward - if both squares are unobstructed
   if (
     board[newIndex] === PIECES.empty &&
@@ -182,6 +213,13 @@ const GeneratePawnMoves = (board, index) => {
   return piece;
 };
 
+/**
+ * Generates all psuedo-legal possible moves for a knight piece on a chessboard.
+ *
+ * @param {number[]} board - An array of integers representing the current state of the chessboard.
+ * @param {number} index - The current index of the king piece on the board.
+ * @returns {Object} An object containing the king piece, its starting square, and an array of target squares it can move to.
+ */
 const GenerateKnightMoves = (board, index) => {
   // Offsets based on the L-shaped movement
   const offsets = [21, -21, 19, -19, 12, -12, 8, -8];
@@ -219,6 +257,16 @@ const GenerateKnightMoves = (board, index) => {
   return piece;
 };
 
+/**
+ * Generates all psuedo-legal possible moves for a king piece on a chessboard.
+ *
+ * @description
+ * Psuedo-legality of a move refers to the legality of a move without considering whether the king is in check after the move is made.
+ *
+ * @param {number[]} board - An array of integers representing the current state of the chessboard.
+ * @param {number} index - The current index of the king piece on the board.
+ * @returns {Object} An object containing the king piece, its starting square, and an array of target squares it can move to.
+ */
 const GenerateKingMoves = (board, index) => {
   const offsets = [-10, 10, 1, -1, 11, -11, 9, -9];
 

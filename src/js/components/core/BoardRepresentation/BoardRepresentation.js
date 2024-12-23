@@ -2,6 +2,16 @@ import { PIECES } from "../../utils/defs";
 
 import { FetchIndexFromCoordinate } from "../../utils/helpers";
 
+/**
+ * Converts a chess position from a Forsyth-Edwards Notation (FEN) string to an array of integers.
+ *
+ * @description
+ * Forsyth-Edwards Notation (FEN) is a standard notation for describing a particular board position of a chess game.
+ * The returned array is a better representation of the chess board where each index corresponds to a square on the board
+ *
+ * @param {string} fen - The Forsyth-Edwards Notation string to convert.
+ * @returns {number[]} board - The current state of the chessboard.
+ */
 export const LoadPositionFromFEN = (fen) => {
   // If a non-string value is passed in, obviously ignore it
   if (typeof fen !== "string") {
@@ -33,7 +43,7 @@ export const LoadPositionFromFEN = (fen) => {
   // Using 120 instead of 64 to allow for out of bound areas to be defined
   const board = new Array(120).fill(PIECES.outOfBounds);
 
-  // Start population from the first rank as we reversed the FEN
+  // Start population from the 8th rank
   let index = FetchIndexFromCoordinate("a8");
 
   for (const rank of ranks) {

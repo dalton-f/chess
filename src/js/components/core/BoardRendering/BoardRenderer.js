@@ -1,5 +1,15 @@
 import { FetchIndexFromCoordinate } from "../../utils/helpers";
 
+/**
+ * Generates an 8x8 grid of tiles in the DOM representing a chessboard
+ *
+ * @description
+ * This function creates a grid of tiles with alternating colors, adds piece SVGs
+ * to tiles occupied by pieces, and assigns a dataset index matching the board
+ * representation.
+ *
+ * @param {number[]} board - The current state of the chessboard.
+ */
 export const InitalizeGraphicalBoard = (board) => {
   const RANK_COUNT = 8;
   const FILE_COUNT = 8;
@@ -55,6 +65,14 @@ export const InitalizeGraphicalBoard = (board) => {
   }
 };
 
+/**
+ * Highlights legal moves for pieces on a chessboard
+ *
+ * @param {Array<Object>} pieceMoves - Array of objects containing piece movement information.
+ * @param {number} pieceMoves[].piece - The piece number.
+ * @param {number} pieceMoves[].startSquare - The index of starting square of the piece.
+ * @param {number[]} pieceMoves[].targetSquares - Array of square indices representing legal moves.
+ */
 export const VisualizeLegalMoves = (pieceMoves) => {
   // Loop over all the pieces
   for (const piece of pieceMoves) {
@@ -66,6 +84,7 @@ export const VisualizeLegalMoves = (pieceMoves) => {
       const square = document.querySelector(`[data-square="${target}"]`);
 
       // Give it a random colour
+      // FIXME: Use of the important! tag is bad practice
       square.classList.add("!bg-[#D36C50]");
     }
   }
