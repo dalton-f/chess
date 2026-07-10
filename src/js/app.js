@@ -1,3 +1,17 @@
+const STARTING_POSITION_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+
+const PIECES = {
+  empty: 0,
+  pawn: 1,
+  knight: 2,
+  bishop: 3,
+  rook: 4,
+  queen: 5,
+  king: 6,
+  white: 8,
+  black: 16,
+};
+
 const ZERO_INDEXED_FILES = {
   a: 0,
   b: 1,
@@ -41,4 +55,46 @@ const indexToAlgebraicCoordinate = (index) => {
   const rank = zeroIndexedRank + 1;
 
   return `${file}${rank}`;
+};
+
+const convertFENToBoard = (fenString) => {
+  const fenSymbolToPieceMap = {
+    p: PIECES.pawn | PIECES.black,
+    n: PIECES.knight | PIECES.black,
+    b: PIECES.bishop | PIECES.black,
+    r: PIECES.rook | PIECES.black,
+    q: PIECES.queen | PIECES.black,
+    k: PIECES.king | PIECES.black,
+    P: PIECES.pawn | PIECES.white,
+    N: PIECES.knight | PIECES.white,
+    B: PIECES.bishop | PIECES.white,
+    R: PIECES.rook | PIECES.white,
+    Q: PIECES.queen | PIECES.white,
+    K: PIECES.king | PIECES.white,
+  };
+
+  const board = new Array(64).fill(PIECES.empty);
+
+  let index = algebraicCoordinateToIndex("a8");
+
+  const ranks = fenString.split("/");
+
+  for (const rank of ranks) {
+    for (const char of rank) {
+      const emptySquares = Number(char);
+
+      if (!Number.isNaN(emptySquares)) {
+        index += emptySquares;
+        continue;
+      }
+
+      board[index] = fenSymbolToPieceMap[char];
+
+      index++;
+    }
+
+    index -= 16;
+  }
+
+  return board;
 };
