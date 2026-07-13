@@ -35,7 +35,30 @@ const ZERO_INDEXED_RANKS = {
 };
 
 const algebraicCoordinateToIndex = (coordinate) => {
+  if (typeof coordinate !== "string")
+    throw new TypeError(
+      "algebraicCoordinateToIndex | Coordinate must be a string.",
+    );
+
+  if (coordinate.length !== 2) {
+    throw new Error(
+      `algebraicCoordinateToIndex | Coordinate "${coordinate}" must be exactly 2 characters long.`,
+    );
+  }
+
   const [file, rank] = coordinate.split("");
+
+  if (!(file in ZERO_INDEXED_FILES)) {
+    throw new Error(
+      `algebraicCoordinateToIndex | Invalid file "${file}". Expected a-h.`,
+    );
+  }
+
+  if (!(rank in ZERO_INDEXED_RANKS)) {
+    throw new Error(
+      `algebraicCoordinateToIndex | Invalid rank "${rank}". Expected 1-8.`,
+    );
+  }
 
   const zeroIndexedFile = ZERO_INDEXED_FILES[file];
   const zeroIndexedRank = ZERO_INDEXED_RANKS[rank];
@@ -46,6 +69,15 @@ const algebraicCoordinateToIndex = (coordinate) => {
 };
 
 const indexToAlgebraicCoordinate = (index) => {
+  if (typeof index !== "number")
+    throw new TypeError("indexToAlgebraicCoordinate | Index must be a number.");
+
+  if (index < 0 || index > 63) {
+    throw new Error(
+      "indexToAlgebraicCoordinate | Index must be a non-negative number between 0 and 63.",
+    );
+  }
+
   const files = "abcdefgh";
 
   const zeroIndexedFile = index % 8;
@@ -98,3 +130,6 @@ const convertFENToBoard = (fenString) => {
 
   return board;
 };
+
+const board = convertFENToBoard(STARTING_POSITION_FEN);
+console.log(board);

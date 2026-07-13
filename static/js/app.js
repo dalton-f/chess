@@ -61,16 +61,30 @@ var ZERO_INDEXED_RANKS = {
   8: 7
 };
 var algebraicCoordinateToIndex = function algebraicCoordinateToIndex(coordinate) {
+  if (typeof coordinate !== "string") throw new TypeError("algebraicCoordinateToIndex | Coordinate must be a string.");
+  if (coordinate.length !== 2) {
+    throw new Error("algebraicCoordinateToIndex | Coordinate \"".concat(coordinate, "\" must be exactly 2 characters long."));
+  }
   var _coordinate$split = coordinate.split(""),
     _coordinate$split2 = _slicedToArray(_coordinate$split, 2),
     file = _coordinate$split2[0],
     rank = _coordinate$split2[1];
+  if (!(file in ZERO_INDEXED_FILES)) {
+    throw new Error("algebraicCoordinateToIndex | Invalid file \"".concat(file, "\". Expected a-h."));
+  }
+  if (!(rank in ZERO_INDEXED_RANKS)) {
+    throw new Error("algebraicCoordinateToIndex | Invalid rank \"".concat(rank, "\". Expected 1-8."));
+  }
   var zeroIndexedFile = ZERO_INDEXED_FILES[file];
   var zeroIndexedRank = ZERO_INDEXED_RANKS[rank];
   var index = zeroIndexedRank * 8 + zeroIndexedFile;
   return index;
 };
 var indexToAlgebraicCoordinate = function indexToAlgebraicCoordinate(index) {
+  if (typeof index !== "number") throw new TypeError("indexToAlgebraicCoordinate | Index must be a number.");
+  if (index < 0 || index > 63) {
+    throw new Error("indexToAlgebraicCoordinate | Index must be a non-negative number between 0 and 63.");
+  }
   var files = "abcdefgh";
   var zeroIndexedFile = index % 8;
   var zeroIndexedRank = Math.floor(index / 8);
@@ -79,7 +93,7 @@ var indexToAlgebraicCoordinate = function indexToAlgebraicCoordinate(index) {
   return "".concat(file).concat(rank);
 };
 var convertFENToBoard = function convertFENToBoard(fenString) {
-  var fenToPieceMap = {
+  var fenSymbolToPieceMap = {
     p: PIECES.pawn | PIECES.black,
     n: PIECES.knight | PIECES.black,
     b: PIECES.bishop | PIECES.black,
@@ -93,11 +107,9 @@ var convertFENToBoard = function convertFENToBoard(fenString) {
     Q: PIECES.queen | PIECES.white,
     K: PIECES.king | PIECES.white
   };
-  console.log(fenString);
   var board = new Array(64).fill(PIECES.empty);
   var index = algebraicCoordinateToIndex("a8");
   var ranks = fenString.split("/");
-  console.log(ranks);
   var _iterator = _createForOfIteratorHelper(ranks),
     _step;
   try {
@@ -108,12 +120,12 @@ var convertFENToBoard = function convertFENToBoard(fenString) {
       try {
         for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
           var _char = _step2.value;
-          console.log(_char);
-          if (!Number.isNaN(Number(_char))) {
-            index += Number(_char);
+          var emptySquares = Number(_char);
+          if (!Number.isNaN(emptySquares)) {
+            index += emptySquares;
             continue;
           }
-          board[index] = fenToPieceMap[_char];
+          board[index] = fenSymbolToPieceMap[_char];
           index++;
         }
       } catch (err) {
@@ -128,8 +140,10 @@ var convertFENToBoard = function convertFENToBoard(fenString) {
   } finally {
     _iterator.f();
   }
+  return board;
 };
-convertFENToBoard(STARTING_POSITION_FEN);
+var board = convertFENToBoard(STARTING_POSITION_FEN);
+console.log(board);
 
 /***/ })
 
