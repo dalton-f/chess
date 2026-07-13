@@ -1,5 +1,4 @@
 /*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
-@layer properties;
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {
@@ -7,11 +6,16 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
+    --color-lime-50: oklch(98.6% 0.031 120.757);
+    --color-lime-500: oklch(76.8% 0.233 130.85);
+    --color-lime-600: oklch(64.8% 0.2 131.684);
+    --color-lime-700: oklch(53.2% 0.157 131.589);
     --color-slate-800: oklch(27.9% 0.041 260.031);
+    --color-neutral-800: oklch(26.9% 0 0);
     --spacing: 0.25rem;
-    --container-3xl: 48rem;
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
+    --color-brielle: #86a666;
   }
 }
 @layer base {
@@ -179,11 +183,9 @@
   .grid {
     display: grid;
   }
-  .max-w-\[792px\] {
-    max-width: 792px;
-  }
-  .transform {
-    transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+  .size-22 {
+    width: calc(var(--spacing) * 22);
+    height: calc(var(--spacing) * 22);
   }
   .grid-cols-8 {
     grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -191,8 +193,17 @@
   .place-items-center {
     place-items: center;
   }
-  .bg-slate-800 {
-    background-color: var(--color-slate-800);
+  .bg-\[\#86a666\] {
+    background-color: #86a666;
+  }
+  .bg-brielle {
+    background-color: var(--color-brielle);
+  }
+  .bg-lime-50 {
+    background-color: var(--color-lime-50);
+  }
+  .bg-neutral-800 {
+    background-color: var(--color-neutral-800);
   }
   .antialiased {
     -webkit-font-smoothing: antialiased;
@@ -205,37 +216,6 @@
   }
   .min-block-svh {
     min-block-size: 100svh;
-  }
-}
-@property --tw-rotate-x {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-rotate-y {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-rotate-z {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-skew-x {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-skew-y {
-  syntax: "*";
-  inherits: false;
-}
-@layer properties {
-  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
-    *, ::before, ::after, ::backdrop {
-      --tw-rotate-x: initial;
-      --tw-rotate-y: initial;
-      --tw-rotate-z: initial;
-      --tw-skew-x: initial;
-      --tw-skew-y: initial;
-    }
   }
 }
 

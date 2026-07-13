@@ -131,5 +131,54 @@ const convertFENToBoard = (fenString) => {
   return board;
 };
 
+// TODO: Optimise this function
+const displayBoard = (board) => {
+  const pieceToImageMap = {
+    [PIECES.white | PIECES.pawn]: "static/images/whitePawn.svg",
+    [PIECES.white | PIECES.knight]: "static/images/whiteKnight.svg",
+    [PIECES.white | PIECES.bishop]: "static/images/whiteBishop.svg",
+    [PIECES.white | PIECES.rook]: "static/images/whiteRook.svg",
+    [PIECES.white | PIECES.queen]: "static/images/whiteQueen.svg",
+    [PIECES.white | PIECES.king]: "static/images/whiteKing.svg",
+
+    [PIECES.black | PIECES.pawn]: "static/images/blackPawn.svg",
+    [PIECES.black | PIECES.knight]: "static/images/blackKnight.svg",
+    [PIECES.black | PIECES.bishop]: "static/images/blackBishop.svg",
+    [PIECES.black | PIECES.rook]: "static/images/blackRook.svg",
+    [PIECES.black | PIECES.queen]: "static/images/blackQueen.svg",
+    [PIECES.black | PIECES.king]: "static/images/blackKing.svg",
+  };
+
+  const boardElement = document.getElementById("board");
+  boardElement.innerHTML = "";
+
+  for (let rank = 7; rank >= 0; rank--) {
+    for (let file = 0; file < 8; file++) {
+      const index = rank * 8 + file;
+
+      const square = document.createElement("div");
+      square.classList.add("size-22");
+
+      const isEvenSquare = (rank + file) % 2 === 0;
+
+      square.classList.add(isEvenSquare ? "bg-lime-50" : "bg-brielle");
+
+      const piece = board[index];
+      const pieceImageSrc = pieceToImageMap[piece];
+
+      if (pieceImageSrc) {
+        const pieceImage = document.createElement("img");
+        pieceImage.src = pieceImageSrc;
+        square.appendChild(pieceImage);
+      }
+
+      boardElement.appendChild(square);
+    }
+  }
+};
+
 const board = convertFENToBoard(STARTING_POSITION_FEN);
+
+displayBoard(board);
+
 console.log(board);
