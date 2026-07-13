@@ -1,4 +1,16 @@
 {
     "/static/js/app.js": "/static/js/app.js",
-    "/static/css/app.css": "/static/css/app.css"
+    "/static/css/app.css": "/static/css/app.css",
+    "/static/images/blackBishop.svg": "/static/images/blackBishop.svg",
+    "/static/images/blackKing.svg": "/static/images/blackKing.svg",
+    "/static/images/blackKnight.svg": "/static/images/blackKnight.svg",
+    "/static/images/blackPawn.svg": "/static/images/blackPawn.svg",
+    "/static/images/blackQueen.svg": "/static/images/blackQueen.svg",
+    "/static/images/blackRook.svg": "/static/images/blackRook.svg",
+    "/static/images/whiteBishop.svg": "/static/images/whiteBishop.svg",
+    "/static/images/whiteKing.svg": "/static/images/whiteKing.svg",
+    "/static/images/whiteKnight.svg": "/static/images/whiteKnight.svg",
+    "/static/images/whitePawn.svg": "/static/images/whitePawn.svg",
+    "/static/images/whiteQueen.svg": "/static/images/whiteQueen.svg",
+    "/static/images/whiteRook.svg": "/static/images/whiteRook.svg"
 }
