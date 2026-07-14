@@ -7,10 +7,6 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --color-lime-50: oklch(98.6% 0.031 120.757);
-    --color-lime-500: oklch(76.8% 0.233 130.85);
-    --color-lime-600: oklch(64.8% 0.2 131.684);
-    --color-lime-700: oklch(53.2% 0.157 131.589);
-    --color-slate-800: oklch(27.9% 0.041 260.031);
     --color-neutral-800: oklch(26.9% 0 0);
     --spacing: 0.25rem;
     --default-font-family: var(--font-sans);
@@ -192,9 +188,6 @@
   }
   .place-items-center {
     place-items: center;
-  }
-  .bg-\[\#86a666\] {
-    background-color: #86a666;
   }
   .bg-brielle {
     background-color: var(--color-brielle);

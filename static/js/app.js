@@ -146,13 +146,15 @@ var convertFENToBoard = function convertFENToBoard(fenString) {
   }
   return board;
 };
-
-// TODO: Optimise this function
 var displayBoard = function displayBoard(board) {
   var _pieceToImageMap;
+  if (!Array.isArray(board)) throw new TypeError("displayBoard | board must be an array.");
+  if (board.length !== 64) throw new Error("displayBoard | expected board length of 64, received ".concat(board.length, "."));
   var pieceToImageMap = (_pieceToImageMap = {}, _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_pieceToImageMap, PIECES.white | PIECES.pawn, "static/images/whitePawn.svg"), PIECES.white | PIECES.knight, "static/images/whiteKnight.svg"), PIECES.white | PIECES.bishop, "static/images/whiteBishop.svg"), PIECES.white | PIECES.rook, "static/images/whiteRook.svg"), PIECES.white | PIECES.queen, "static/images/whiteQueen.svg"), PIECES.white | PIECES.king, "static/images/whiteKing.svg"), PIECES.black | PIECES.pawn, "static/images/blackPawn.svg"), PIECES.black | PIECES.knight, "static/images/blackKnight.svg"), PIECES.black | PIECES.bishop, "static/images/blackBishop.svg"), PIECES.black | PIECES.rook, "static/images/blackRook.svg"), _defineProperty(_defineProperty(_pieceToImageMap, PIECES.black | PIECES.queen, "static/images/blackQueen.svg"), PIECES.black | PIECES.king, "static/images/blackKing.svg"));
   var boardElement = document.getElementById("board");
   boardElement.innerHTML = "";
+  if (!boardElement) throw new Error('displayBoard | element with id "board" not found.');
+  var fragment = document.createDocumentFragment();
   for (var rank = 7; rank >= 0; rank--) {
     for (var file = 0; file < 8; file++) {
       var index = rank * 8 + file;
@@ -167,13 +169,13 @@ var displayBoard = function displayBoard(board) {
         pieceImage.src = pieceImageSrc;
         square.appendChild(pieceImage);
       }
-      boardElement.appendChild(square);
+      fragment.appendChild(square);
     }
   }
+  boardElement.appendChild(fragment);
 };
 var board = convertFENToBoard(STARTING_POSITION_FEN);
 displayBoard(board);
-console.log(board);
 
 /***/ })
 

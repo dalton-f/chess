@@ -131,8 +131,15 @@ const convertFENToBoard = (fenString) => {
   return board;
 };
 
-// TODO: Optimise this function
 const displayBoard = (board) => {
+  if (!Array.isArray(board))
+    throw new TypeError("displayBoard | board must be an array.");
+
+  if (board.length !== 64)
+    throw new Error(
+      `displayBoard | expected board length of 64, received ${board.length}.`,
+    );
+
   const pieceToImageMap = {
     [PIECES.white | PIECES.pawn]: "static/images/whitePawn.svg",
     [PIECES.white | PIECES.knight]: "static/images/whiteKnight.svg",
@@ -151,6 +158,11 @@ const displayBoard = (board) => {
 
   const boardElement = document.getElementById("board");
   boardElement.innerHTML = "";
+
+  if (!boardElement)
+    throw new Error('displayBoard | element with id "board" not found.');
+
+  const fragment = document.createDocumentFragment();
 
   for (let rank = 7; rank >= 0; rank--) {
     for (let file = 0; file < 8; file++) {
@@ -172,13 +184,13 @@ const displayBoard = (board) => {
         square.appendChild(pieceImage);
       }
 
-      boardElement.appendChild(square);
+      fragment.appendChild(square);
     }
   }
+
+  boardElement.appendChild(fragment);
 };
 
 const board = convertFENToBoard(STARTING_POSITION_FEN);
 
 displayBoard(board);
-
-console.log(board);
