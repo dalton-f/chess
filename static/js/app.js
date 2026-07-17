@@ -64,6 +64,38 @@ var ZERO_INDEXED_RANKS = {
   7: 6,
   8: 7
 };
+var CASTLING_RIGHTS = {
+  whiteKingside: 1,
+  whiteQueenside: 2,
+  blackKingside: 4,
+  blackQueenside: 8
+};
+var state = {
+  activeColor: PIECES.white,
+  castlingRights: 15,
+  enPassantSquare: null,
+  halfMoveClock: 0,
+  fullMoveNumber: 1,
+  board: [],
+  occupancyBitboards: {
+    white: {
+      pawns: 0n,
+      knights: 0n,
+      bishops: 0n,
+      rooks: 0n,
+      queens: 0n,
+      king: 0n
+    },
+    black: {
+      pawns: 0n,
+      knights: 0n,
+      bishops: 0n,
+      rooks: 0n,
+      queens: 0n,
+      king: 0n
+    }
+  }
+};
 var algebraicCoordinateToIndex = function algebraicCoordinateToIndex(coordinate) {
   if (typeof coordinate !== "string") throw new TypeError("algebraicCoordinateToIndex | Coordinate must be a string.");
   if (coordinate.length !== 2) {
@@ -174,8 +206,20 @@ var displayBoard = function displayBoard(board) {
   }
   boardElement.appendChild(fragment);
 };
-var board = convertFENToBoard(STARTING_POSITION_FEN);
-displayBoard(board);
+var printBitboard = function printBitboard(bitboard) {
+  var stringBitboard = "";
+  for (var rank = 7; rank >= 0; rank--) {
+    for (var file = 0; file < 8; file++) {
+      var square = BigInt(rank * 8 + file);
+      stringBitboard += bitboard & square ? "1 " : ". ";
+    }
+    stringBitboard += "\n";
+  }
+  console.log(stringBitboard);
+};
+state.board = convertFENToBoard(STARTING_POSITION_FEN);
+displayBoard(state.board);
+console.log(state);
 
 /***/ })
 

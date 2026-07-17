@@ -34,6 +34,41 @@ const ZERO_INDEXED_RANKS = {
   8: 7,
 };
 
+const CASTLING_RIGHTS = {
+  whiteKingside: 1,
+  whiteQueenside: 2,
+  blackKingside: 4,
+  blackQueenside: 8,
+};
+
+const state = {
+  activeColor: PIECES.white,
+  castlingRights: 0b1111,
+  enPassantSquare: null,
+  halfMoveClock: 0,
+  fullMoveNumber: 1,
+  board: [],
+  occupancyBitboards: {
+    white: {
+      pawns: 0n,
+      knights: 0n,
+      bishops: 0n,
+      rooks: 0n,
+      queens: 0n,
+      king: 0n,
+    },
+
+    black: {
+      pawns: 0n,
+      knights: 0n,
+      bishops: 0n,
+      rooks: 0n,
+      queens: 0n,
+      king: 0n,
+    },
+  },
+};
+
 const algebraicCoordinateToIndex = (coordinate) => {
   if (typeof coordinate !== "string")
     throw new TypeError(
@@ -191,6 +226,24 @@ const displayBoard = (board) => {
   boardElement.appendChild(fragment);
 };
 
-const board = convertFENToBoard(STARTING_POSITION_FEN);
+const printBitboard = (bitboard) => {
+  let stringBitboard = "";
 
-displayBoard(board);
+  for (let rank = 7; rank >= 0; rank--) {
+    for (let file = 0; file < 8; file++) {
+      const square = BigInt(rank * 8 + file);
+
+      stringBitboard += bitboard & square ? "1 " : ". ";
+    }
+
+    stringBitboard += "\n";
+  }
+
+  console.log(stringBitboard);
+};
+
+state.board = convertFENToBoard(STARTING_POSITION_FEN);
+
+displayBoard(state.board);
+
+console.log(state);
