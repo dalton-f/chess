@@ -41,6 +41,7 @@ const CASTLING_RIGHTS = {
   blackQueenside: 8,
 };
 
+// state.board gets used for the UI, and the occupancy bitboards get used for the internal calculation
 const state = {
   activeColor: PIECES.white,
   castlingRights: 0b1111,
@@ -233,7 +234,7 @@ const printBitboard = (bitboard) => {
     for (let file = 0; file < 8; file++) {
       const square = BigInt(rank * 8 + file);
 
-      stringBitboard += bitboard & square ? "1 " : ". ";
+      stringBitboard += bitboard & (1n << square) ? "1 " : ". ";
     }
 
     stringBitboard += "\n";
@@ -242,8 +243,122 @@ const printBitboard = (bitboard) => {
   console.log(stringBitboard);
 };
 
+const debugState = (state) => {
+  const pieceSymbols = {
+    [PIECES.white | PIECES.pawn]: "P",
+    [PIECES.white | PIECES.knight]: "N",
+    [PIECES.white | PIECES.bishop]: "B",
+    [PIECES.white | PIECES.rook]: "R",
+    [PIECES.white | PIECES.queen]: "Q",
+    [PIECES.white | PIECES.king]: "K",
+
+    [PIECES.black | PIECES.pawn]: "p",
+    [PIECES.black | PIECES.knight]: "n",
+    [PIECES.black | PIECES.bishop]: "b",
+    [PIECES.black | PIECES.rook]: "r",
+    [PIECES.black | PIECES.queen]: "q",
+    [PIECES.black | PIECES.king]: "k",
+  };
+
+  console.log("=".repeat(70));
+  console.log("GAME STATE");
+  console.log("=".repeat(70));
+
+  console.log(
+    `Side to move: ${state.activeColor === PIECES.white ? "White" : "Black"}`,
+  );
+
+  console.log(
+    `Castling: ${
+      (state.castlingRights & 0b1000 ? "K" : "") +
+        (state.castlingRights & 0b0100 ? "Q" : "") +
+        (state.castlingRights & 0b0010 ? "k" : "") +
+        (state.castlingRights & 0b0001 ? "q" : "") || "-"
+    }`,
+  );
+
+  console.log(`En Passant: ${state.enPassantSquare ?? "-"}`);
+  console.log(`Half Moves: ${state.halfMoveClock}`);
+  console.log(`Full Moves: ${state.fullMoveNumber}`);
+
+  console.log("=".repeat(70));
+  console.log("BOARD");
+  console.log("=".repeat(70));
+
+  let boardString = "";
+
+  for (let rank = 7; rank >= 0; rank--) {
+    boardString += `${rank + 1} `;
+
+    for (let file = 0; file < 8; file++) {
+      const square = rank * 8 + file;
+      const piece = state.board[square];
+
+      boardString += (pieceSymbols[piece] ?? ".") + " ";
+    }
+
+    boardString += "\n";
+  }
+
+  boardString += "  a b c d e f g h";
+
+  console.log(boardString);
+
+  console.log("=".repeat(70));
+  console.log("WHITE BITBOARDS");
+  console.log("=".repeat(70));
+
+  for (const [name, bb] of Object.entries(state.occupancyBitboards.white)) {
+    console.log(`\n${name.toUpperCase()}`);
+    printBitboard(bb);
+  }
+
+  console.log("=".repeat(70));
+  console.log("BLACK BITBOARDS");
+  console.log("=".repeat(70));
+
+  for (const [name, bb] of Object.entries(state.occupancyBitboards.black)) {
+    console.log(`\n${name.toUpperCase()}`);
+    printBitboard(bb);
+  }
+
+  const whiteOccupancy =
+    state.occupancyBitboards.white.pawns |
+    state.occupancyBitboards.white.knights |
+    state.occupancyBitboards.white.bishops |
+    state.occupancyBitboards.white.rooks |
+    state.occupancyBitboards.white.queens |
+    state.occupancyBitboards.white.king;
+
+  const blackOccupancy =
+    state.occupancyBitboards.black.pawns |
+    state.occupancyBitboards.black.knights |
+    state.occupancyBitboards.black.bishops |
+    state.occupancyBitboards.black.rooks |
+    state.occupancyBitboards.black.queens |
+    state.occupancyBitboards.black.king;
+
+  console.log("=".repeat(70));
+  console.log("WHITE OCCUPANCY");
+  console.log("=".repeat(70));
+
+  printBitboard(whiteOccupancy);
+
+  console.log("=".repeat(70));
+  console.log("BLACK OCCUPANCY");
+  console.log("=".repeat(70));
+
+  printBitboard(blackOccupancy);
+
+  console.log("=".repeat(70));
+  console.log("ALL OCCUPANCY");
+  console.log("=".repeat(70));
+
+  printBitboard(whiteOccupancy | blackOccupancy);
+};
+
 state.board = convertFENToBoard(STARTING_POSITION_FEN);
 
 displayBoard(state.board);
 
-console.log(state);
+debugState(state);

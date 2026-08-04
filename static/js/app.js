@@ -70,6 +70,8 @@ var CASTLING_RIGHTS = {
   blackKingside: 4,
   blackQueenside: 8
 };
+
+// state.board gets used for the UI, and the occupancy bitboards get used for the internal calculation
 var state = {
   activeColor: PIECES.white,
   castlingRights: 15,
@@ -211,15 +213,77 @@ var printBitboard = function printBitboard(bitboard) {
   for (var rank = 7; rank >= 0; rank--) {
     for (var file = 0; file < 8; file++) {
       var square = BigInt(rank * 8 + file);
-      stringBitboard += bitboard & square ? "1 " : ". ";
+      stringBitboard += bitboard & 1n << square ? "1 " : ". ";
     }
     stringBitboard += "\n";
   }
   console.log(stringBitboard);
 };
+var debugState = function debugState(state) {
+  var _pieceSymbols, _state$enPassantSquar;
+  var pieceSymbols = (_pieceSymbols = {}, _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_pieceSymbols, PIECES.white | PIECES.pawn, "P"), PIECES.white | PIECES.knight, "N"), PIECES.white | PIECES.bishop, "B"), PIECES.white | PIECES.rook, "R"), PIECES.white | PIECES.queen, "Q"), PIECES.white | PIECES.king, "K"), PIECES.black | PIECES.pawn, "p"), PIECES.black | PIECES.knight, "n"), PIECES.black | PIECES.bishop, "b"), PIECES.black | PIECES.rook, "r"), _defineProperty(_defineProperty(_pieceSymbols, PIECES.black | PIECES.queen, "q"), PIECES.black | PIECES.king, "k"));
+  console.log("=".repeat(70));
+  console.log("GAME STATE");
+  console.log("=".repeat(70));
+  console.log("Side to move: ".concat(state.activeColor === PIECES.white ? "White" : "Black"));
+  console.log("Castling: ".concat((state.castlingRights & 8 ? "K" : "") + (state.castlingRights & 4 ? "Q" : "") + (state.castlingRights & 2 ? "k" : "") + (state.castlingRights & 1 ? "q" : "") || "-"));
+  console.log("En Passant: ".concat((_state$enPassantSquar = state.enPassantSquare) !== null && _state$enPassantSquar !== void 0 ? _state$enPassantSquar : "-"));
+  console.log("Half Moves: ".concat(state.halfMoveClock));
+  console.log("Full Moves: ".concat(state.fullMoveNumber));
+  console.log("=".repeat(70));
+  console.log("BOARD");
+  console.log("=".repeat(70));
+  var boardString = "";
+  for (var rank = 7; rank >= 0; rank--) {
+    boardString += "".concat(rank + 1, " ");
+    for (var file = 0; file < 8; file++) {
+      var _pieceSymbols$piece;
+      var square = rank * 8 + file;
+      var piece = state.board[square];
+      boardString += ((_pieceSymbols$piece = pieceSymbols[piece]) !== null && _pieceSymbols$piece !== void 0 ? _pieceSymbols$piece : ".") + " ";
+    }
+    boardString += "\n";
+  }
+  boardString += "  a b c d e f g h";
+  console.log(boardString);
+  console.log("=".repeat(70));
+  console.log("WHITE BITBOARDS");
+  console.log("=".repeat(70));
+  for (var _i = 0, _Object$entries = Object.entries(state.occupancyBitboards.white); _i < _Object$entries.length; _i++) {
+    var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+      name = _Object$entries$_i[0],
+      bb = _Object$entries$_i[1];
+    console.log("\n".concat(name.toUpperCase()));
+    printBitboard(bb);
+  }
+  console.log("=".repeat(70));
+  console.log("BLACK BITBOARDS");
+  console.log("=".repeat(70));
+  for (var _i2 = 0, _Object$entries2 = Object.entries(state.occupancyBitboards.black); _i2 < _Object$entries2.length; _i2++) {
+    var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i2], 2),
+      _name = _Object$entries2$_i[0],
+      _bb = _Object$entries2$_i[1];
+    console.log("\n".concat(_name.toUpperCase()));
+    printBitboard(_bb);
+  }
+  var whiteOccupancy = state.occupancyBitboards.white.pawns | state.occupancyBitboards.white.knights | state.occupancyBitboards.white.bishops | state.occupancyBitboards.white.rooks | state.occupancyBitboards.white.queens | state.occupancyBitboards.white.king;
+  var blackOccupancy = state.occupancyBitboards.black.pawns | state.occupancyBitboards.black.knights | state.occupancyBitboards.black.bishops | state.occupancyBitboards.black.rooks | state.occupancyBitboards.black.queens | state.occupancyBitboards.black.king;
+  console.log("=".repeat(70));
+  console.log("WHITE OCCUPANCY");
+  console.log("=".repeat(70));
+  printBitboard(whiteOccupancy);
+  console.log("=".repeat(70));
+  console.log("BLACK OCCUPANCY");
+  console.log("=".repeat(70));
+  printBitboard(blackOccupancy);
+  console.log("=".repeat(70));
+  console.log("ALL OCCUPANCY");
+  console.log("=".repeat(70));
+  printBitboard(whiteOccupancy | blackOccupancy);
+};
 state.board = convertFENToBoard(STARTING_POSITION_FEN);
 displayBoard(state.board);
-console.log(state);
+debugState(state);
 
 /***/ })
 
