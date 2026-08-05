@@ -74,7 +74,7 @@ var CASTLING_RIGHTS = {
 // state.board gets used for the UI, and the occupancy bitboards get used for the internal calculation
 var state = {
   activeColor: PIECES.white,
-  castlingRights: 15,
+  castlingRights: 0,
   enPassantSquare: null,
   halfMoveClock: 0,
   fullMoveNumber: 1,
@@ -233,7 +233,7 @@ var debugState = function debugState(state) {
   console.log("GAME STATE");
   console.log("=".repeat(70));
   console.log("Side to move: ".concat(state.activeColor === PIECES.white ? "White" : "Black"));
-  console.log("Castling: ".concat((state.castlingRights & 8 ? "K" : "") + (state.castlingRights & 4 ? "Q" : "") + (state.castlingRights & 2 ? "k" : "") + (state.castlingRights & 1 ? "q" : "") || "-"));
+  console.log("Castling: ".concat((state.castlingRights & CASTLING_RIGHTS.whiteKingside ? "K" : "") + (state.castlingRights & CASTLING_RIGHTS.whiteQueenside ? "Q" : "") + (state.castlingRights & CASTLING_RIGHTS.blackKingside ? "k" : "") + (state.castlingRights & CASTLING_RIGHTS.blackQueenside ? "q" : "") || "-"));
   console.log("En Passant: ".concat((_state$enPassantSquar = state.enPassantSquare) !== null && _state$enPassantSquar !== void 0 ? _state$enPassantSquar : "-"));
   console.log("Half Moves: ".concat(state.halfMoveClock));
   console.log("Full Moves: ".concat(state.fullMoveNumber));
@@ -332,8 +332,39 @@ var splitFENString = function splitFENString(fenString) {
   if (!Number.isInteger(fullmove) || fullmove <= 0) throw new Error("splitFENString | Fullmove number must be a positive integer");
   return [piecePlacement, activeColor, castlingAvailability, enPassantTarget, Number(halfMoveClock), Number(fullMoveNumber)];
 };
+var loadGame = function loadGame(fenString) {
+  var _splitFENString = splitFENString(fenString),
+    _splitFENString2 = _slicedToArray(_splitFENString, 6),
+    piecePlacement = _splitFENString2[0],
+    activeColor = _splitFENString2[1],
+    castlingAvailability = _splitFENString2[2],
+    enPassantTarget = _splitFENString2[3],
+    halfMoveClock = _splitFENString2[4],
+    fullMoveNumber = _splitFENString2[5];
+  state.board = convertFENToBoard(piecePlacement);
+  state.activeColor = activeColor === "w" ? PIECES.white : PIECES.black;
+  state.enPassantSquare = enPassantTarget === "-" ? null : algebraicCoordinateToIndex(enPassantTarget);
+  var _iterator3 = _createForOfIteratorHelper(castlingAvailability),
+    _step3;
+  try {
+    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+      var castlingRight = _step3.value;
+      if (castlingRight === "K") state.castlingRights |= CASTLING_RIGHTS.whiteKingside;
+      if (castlingRight === "Q") state.castlingRights |= CASTLING_RIGHTS.whiteQueenside;
+      if (castlingRight === "k") state.castlingRights |= CASTLING_RIGHTS.blackKingside;
+      if (castlingRight === "q") state.castlingRights |= CASTLING_RIGHTS.blackQueenside;
+    }
+  } catch (err) {
+    _iterator3.e(err);
+  } finally {
+    _iterator3.f();
+  }
+  state.halfMoveClock = halfMoveClock;
+  state.fullMoveNumber = fullMoveNumber;
+  displayBoard(state.board);
+};
+loadGame("r3k1nr/ppB2ppp/8/8/1bbP4/5QP1/PPP4P/R2K3R b kq - 3 16");
 debugState(state);
-console.log(splitFENString(STARTING_POSITION_FEN));
 
 /***/ })
 

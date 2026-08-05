@@ -45,7 +45,7 @@ const CASTLING_RIGHTS = {
 // state.board gets used for the UI, and the occupancy bitboards get used for the internal calculation
 const state = {
   activeColor: PIECES.white,
-  castlingRights: 0b1111,
+  castlingRights: 0b0000,
   enPassantSquare: null,
   halfMoveClock: 0,
   fullMoveNumber: 1,
@@ -288,10 +288,11 @@ const debugState = (state) => {
 
   console.log(
     `Castling: ${
-      (state.castlingRights & 0b1000 ? "K" : "") +
-        (state.castlingRights & 0b0100 ? "Q" : "") +
-        (state.castlingRights & 0b0010 ? "k" : "") +
-        (state.castlingRights & 0b0001 ? "q" : "") || "-"
+      (state.castlingRights & CASTLING_RIGHTS.whiteKingside ? "K" : "") +
+        (state.castlingRights & CASTLING_RIGHTS.whiteQueenside ? "Q" : "") +
+        (state.castlingRights & CASTLING_RIGHTS.blackKingside ? "k" : "") +
+        (state.castlingRights & CASTLING_RIGHTS.blackQueenside ? "q" : "") ||
+      "-"
     }`,
   );
 
@@ -451,6 +452,44 @@ const splitFENString = (fenString) => {
   ];
 };
 
-debugState(state);
+const loadGame = (fenString) => {
+  const [
+    piecePlacement,
+    activeColor,
+    castlingAvailability,
+    enPassantTarget,
+    halfMoveClock,
+    fullMoveNumber,
+  ] = splitFENString(fenString);
 
-console.log(splitFENString(STARTING_POSITION_FEN));
+  state.board = convertFENToBoard(piecePlacement);
+  state.activeColor = activeColor === "w" ? PIECES.white : PIECES.black;
+
+  state.enPassantSquare =
+    enPassantTarget === "-"
+      ? null
+      : algebraicCoordinateToIndex(enPassantTarget);
+
+  for (const castlingRight of castlingAvailability) {
+    if (castlingRight === "K")
+      state.castlingRights |= CASTLING_RIGHTS.whiteKingside;
+
+    if (castlingRight === "Q")
+      state.castlingRights |= CASTLING_RIGHTS.whiteQueenside;
+
+    if (castlingRight === "k")
+      state.castlingRights |= CASTLING_RIGHTS.blackKingside;
+
+    if (castlingRight === "q")
+      state.castlingRights |= CASTLING_RIGHTS.blackQueenside;
+  }
+
+  state.halfMoveClock = halfMoveClock;
+  state.fullMoveNumber = fullMoveNumber;
+
+  displayBoard(state.board);
+};
+
+loadGame("r3k1nr/ppB2ppp/8/8/1bbP4/5QP1/PPP4P/R2K3R b kq - 3 16");
+
+debugState(state);
