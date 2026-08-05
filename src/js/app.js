@@ -141,6 +141,15 @@ const convertFENToBoard = (fenString) => {
     K: PIECES.king | PIECES.white,
   };
 
+  const pieceTypeToBitboardName = {
+    [PIECES.pawn]: "pawns",
+    [PIECES.knight]: "knights",
+    [PIECES.bishop]: "bishops",
+    [PIECES.rook]: "rooks",
+    [PIECES.queen]: "queens",
+    [PIECES.king]: "king",
+  };
+
   const board = new Array(64).fill(PIECES.empty);
 
   let index = algebraicCoordinateToIndex("a8");
@@ -156,7 +165,15 @@ const convertFENToBoard = (fenString) => {
         continue;
       }
 
-      board[index] = fenSymbolToPieceMap[char];
+      const piece = fenSymbolToPieceMap[char];
+      board[index] = piece;
+
+      // Update occupancy bitboards as part of looping through each piece on the board
+      const color = piece & PIECES.white ? "white" : "black";
+      const type = piece & 0b00111;
+
+      state.occupancyBitboards[color][pieceTypeToBitboardName[type]] |=
+        1n << BigInt(index);
 
       index++;
     }
