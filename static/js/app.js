@@ -32,7 +32,7 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-var STARTING_POSITION_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+var STARTING_POSITION_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 var PIECES = {
   empty: 0,
   pawn: 1,
@@ -288,9 +288,52 @@ var debugState = function debugState(state) {
   console.log("=".repeat(70));
   printBitboard(whiteOccupancy | blackOccupancy);
 };
-state.board = convertFENToBoard(STARTING_POSITION_FEN);
-displayBoard(state.board);
+var splitFENString = function splitFENString(fenString) {
+  if (typeof fenString !== "string") throw new TypeError("splitFENString | FEN must be a string.");
+  var parts = fenString.trim().split(/\s+/);
+  if (parts.length !== 6) throw new Error("splitFENString | FEN must contain exactly 6 fields");
+  var _parts = _slicedToArray(parts, 6),
+    piecePlacement = _parts[0],
+    activeColor = _parts[1],
+    castlingAvailability = _parts[2],
+    enPassantTarget = _parts[3],
+    halfMoveClock = _parts[4],
+    fullMoveNumber = _parts[5];
+
+  // Validate piece placement
+  var ranks = piecePlacement.split("/");
+  if (ranks.length !== 8) throw new Error("splitFENString | Piece placement must contain 8 ranks");
+  var pieceRegex = /^[prnbqkPRNBQK1-8]+$/;
+  ranks.forEach(function (rank, i) {
+    if (!pieceRegex.test(rank)) throw new Error("splitFENString | Invalid characters in rank ".concat(i + 1));
+
+    // Validate rank adds up to 8 squares
+    var count = rank.split("").reduce(function (sum, _char2) {
+      return sum + (isNaN(_char2) ? 1 : Number(_char2));
+    }, 0);
+    if (count !== 8) throw new Error("splitFENString | Rank ".concat(i + 1, " does not contain exactly 8 squares"));
+  });
+
+  // Validate active color
+  if (!["w", "b"].includes(activeColor)) throw new Error("splitFENString | Active color must be 'w' or 'b'");
+
+  // Validate castling availability
+  if (!/^[KQkq-]+$/.test(castlingAvailability)) throw new Error("splitFENString | Invalid castling availability field");
+
+  // Validate en passant target square (only ranks 3 or 6 allowed)
+  if (!/^(-|[a-h][36])$/.test(enPassantTarget)) throw new Error("splitFENString | Invalid en passant target square");
+
+  // Validate halfmove clock
+  var halfmove = Number(halfMoveClock);
+  if (!Number.isInteger(halfmove) || halfmove < 0) throw new Error("splitFENString | Halfmove clock must be a non-negative integer");
+
+  // Validate fullmove number
+  var fullmove = Number(fullMoveNumber);
+  if (!Number.isInteger(fullmove) || fullmove <= 0) throw new Error("splitFENString | Fullmove number must be a positive integer");
+  return [piecePlacement, activeColor, castlingAvailability, enPassantTarget, Number(halfMoveClock), Number(fullMoveNumber)];
+};
 debugState(state);
+console.log(splitFENString(STARTING_POSITION_FEN));
 
 /***/ })
 

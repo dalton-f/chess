@@ -1,4 +1,5 @@
-const STARTING_POSITION_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+const STARTING_POSITION_FEN =
+  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 const PIECES = {
   empty: 0,
@@ -374,8 +375,82 @@ const debugState = (state) => {
   printBitboard(whiteOccupancy | blackOccupancy);
 };
 
-state.board = convertFENToBoard(STARTING_POSITION_FEN);
+const splitFENString = (fenString) => {
+  if (typeof fenString !== "string")
+    throw new TypeError("splitFENString | FEN must be a string.");
 
-displayBoard(state.board);
+  const parts = fenString.trim().split(/\s+/);
+
+  if (parts.length !== 6)
+    throw new Error("splitFENString | FEN must contain exactly 6 fields");
+
+  const [
+    piecePlacement,
+    activeColor,
+    castlingAvailability,
+    enPassantTarget,
+    halfMoveClock,
+    fullMoveNumber,
+  ] = parts;
+
+  // Validate piece placement
+  const ranks = piecePlacement.split("/");
+  if (ranks.length !== 8)
+    throw new Error("splitFENString | Piece placement must contain 8 ranks");
+
+  const pieceRegex = /^[prnbqkPRNBQK1-8]+$/;
+
+  ranks.forEach((rank, i) => {
+    if (!pieceRegex.test(rank))
+      throw new Error(`splitFENString | Invalid characters in rank ${i + 1}`);
+
+    // Validate rank adds up to 8 squares
+    const count = rank
+      .split("")
+      .reduce((sum, char) => sum + (isNaN(char) ? 1 : Number(char)), 0);
+
+    if (count !== 8)
+      throw new Error(
+        `splitFENString | Rank ${i + 1} does not contain exactly 8 squares`,
+      );
+  });
+
+  // Validate active color
+  if (!["w", "b"].includes(activeColor))
+    throw new Error("splitFENString | Active color must be 'w' or 'b'");
+
+  // Validate castling availability
+  if (!/^[KQkq-]+$/.test(castlingAvailability))
+    throw new Error("splitFENString | Invalid castling availability field");
+
+  // Validate en passant target square (only ranks 3 or 6 allowed)
+  if (!/^(-|[a-h][36])$/.test(enPassantTarget))
+    throw new Error("splitFENString | Invalid en passant target square");
+
+  // Validate halfmove clock
+  const halfmove = Number(halfMoveClock);
+  if (!Number.isInteger(halfmove) || halfmove < 0)
+    throw new Error(
+      "splitFENString | Halfmove clock must be a non-negative integer",
+    );
+
+  // Validate fullmove number
+  const fullmove = Number(fullMoveNumber);
+  if (!Number.isInteger(fullmove) || fullmove <= 0)
+    throw new Error(
+      "splitFENString | Fullmove number must be a positive integer",
+    );
+
+  return [
+    piecePlacement,
+    activeColor,
+    castlingAvailability,
+    enPassantTarget,
+    Number(halfMoveClock),
+    Number(fullMoveNumber),
+  ];
+};
 
 debugState(state);
+
+console.log(splitFENString(STARTING_POSITION_FEN));
