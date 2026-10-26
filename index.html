@@ -1,17 +1,128 @@
 <!doctype html>
-<html lang="en" class="bg-diesel text-white antialiased">
+<html lang="en" class="font-montserrat bg-diesel text-white antialiased">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A simple chess program with web-based GUI"
+    />
     <title>Chess</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
 
     <link rel="stylesheet" href="/static/css/app.css" />
 
     <script src="/static/js/app.js" defer></script>
   </head>
   <body>
-    <main class="flex h-dvh flex-col items-center justify-center gap-8 p-10">
-      <div id="chessBoard"></div>
+    <main
+      class="mx-auto flex min-h-dvh max-w-xs flex-col items-center justify-center gap-6 md:max-w-3xl md:p-10"
+    >
+      <div class="grid grid-cols-8" id="chessBoard">
+        <div class="bg-solitude aspect-square w-10 rounded-tl-sm md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 rounded-tr-sm md:w-20"></div>
+
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+
+        <div class="bg-oregano aspect-square w-10 rounded-bl-sm md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 md:w-20"></div>
+        <div class="bg-oregano aspect-square w-10 md:w-20"></div>
+        <div class="bg-solitude aspect-square w-10 rounded-br-sm md:w-20"></div>
+      </div>
+
+      <div class="w-full max-w-[40rem] text-lg">
+        <form class="grid gap-6 md:grid-cols-2">
+          <input
+            type="text"
+            name="position"
+            id="position"
+            class="peer rounded-lg bg-neutral-700 p-4 text-center"
+            placeholder="Load PGN or FEN"
+            autocapitalize="off"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            required
+          />
+
+          <label for="position" class="sr-only">Position</label>
+
+          <button
+            type="submit"
+            class="peer-not-placeholder-shown:bg-lime rounded-lg bg-neutral-700 p-4 font-semibold text-white/40 transition-colors duration-300 peer-not-placeholder-shown:text-white"
+          >
+            Load
+          </button>
+        </form>
+      </div>
     </main>
   </body>
 </html>
