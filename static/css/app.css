@@ -8,6 +8,8 @@
       "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
+    --color-neutral-400: oklch(70.8% 0 none);
+    --color-neutral-500: oklch(55.6% 0 none);
     --color-neutral-700: oklch(37.1% 0 none);
     --color-neutral-800: oklch(26.9% 0 none);
     --color-white: #fff;
@@ -224,14 +226,8 @@
   .w-10 {
     width: calc(var(--spacing) * 10);
   }
-  .w-20 {
-    width: calc(var(--spacing) * 20);
-  }
   .w-full {
     width: 100%;
-  }
-  .max-w-3xl {
-    max-width: var(--container-3xl);
   }
   .max-w-\[40rem\] {
     max-width: 40rem;
@@ -239,8 +235,8 @@
   .max-w-xs {
     max-width: var(--container-xs);
   }
-  .grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .cursor-pointer {
+    cursor: pointer;
   }
   .grid-cols-8 {
     grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -272,6 +268,16 @@
   .rounded-bl-sm {
     border-bottom-left-radius: var(--radius-sm);
   }
+  .border-2 {
+    border-style: var(--tw-border-style);
+    border-width: 2px;
+  }
+  .border-white\/0 {
+    border-color: color-mix(in srgb, #fff 0%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-white) 0%, transparent);
+    }
+  }
   .bg-diesel {
     background-color: var(--color-diesel);
   }
@@ -287,9 +293,6 @@
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
-  .p-10 {
-    padding: calc(var(--spacing) * 10);
-  }
   .text-center {
     text-align: center;
   }
@@ -299,10 +302,6 @@
   .text-lg {
     font-size: var(--text-lg);
     line-height: var(--tw-leading, var(--text-lg--line-height));
-  }
-  .font-bold {
-    --tw-font-weight: var(--font-weight-bold);
-    font-weight: var(--font-weight-bold);
   }
   .font-semibold {
     --tw-font-weight: var(--font-weight-semibold);
@@ -342,6 +341,44 @@
   .peer-not-placeholder-shown\:text-white:is(:where(.peer):not(:placeholder-shown) ~ *) {
     color: var(--color-white);
   }
+  @media (hover: hover) {
+    .hover\:border:hover {
+      border-style: var(--tw-border-style);
+      border-width: 1px;
+    }
+    .hover\:border-2:hover {
+      border-style: var(--tw-border-style);
+      border-width: 2px;
+    }
+    .hover\:border-neutral-400:hover {
+      border-color: var(--color-neutral-400);
+    }
+    .hover\:border-neutral-500:hover {
+      border-color: var(--color-neutral-500);
+    }
+    .hover\:border-neutral-800:hover {
+      border-color: var(--color-neutral-800);
+    }
+    .peer-not-placeholder-shown\:hover\:border-white:is(:where(.peer):not(:-moz-placeholder) ~ *):hover {
+      border-color: var(--color-white);
+    }
+    .peer-not-placeholder-shown\:hover\:border-white:is(:where(.peer):not(:placeholder-shown) ~ *):hover {
+      border-color: var(--color-white);
+    }
+  }
+  .focus\:border-neutral-500:focus {
+    border-color: var(--color-neutral-500);
+  }
+  .focus\:outline-none:focus {
+    --tw-outline-style: none;
+    outline-style: none;
+  }
+  .peer-not-placeholder-shown\:focus\:border-white:is(:where(.peer):not(:-moz-placeholder) ~ *):focus {
+    border-color: var(--color-white);
+  }
+  .peer-not-placeholder-shown\:focus\:border-white:is(:where(.peer):not(:placeholder-shown) ~ *):focus {
+    border-color: var(--color-white);
+  }
   @media (width >= 48rem) {
     .md\:w-20 {
       width: calc(var(--spacing) * 20);
@@ -352,16 +389,15 @@
     .md\:grid-cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .md\:items-center {
-      align-items: center;
-    }
-    .md\:justify-center {
-      justify-content: center;
-    }
     .md\:p-10 {
       padding: calc(var(--spacing) * 10);
     }
   }
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
 }
 @property --tw-font-weight {
   syntax: "*";
@@ -374,6 +410,7 @@
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
+      --tw-border-style: solid;
       --tw-font-weight: initial;
       --tw-duration: initial;
     }
