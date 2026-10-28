@@ -4,6 +4,7 @@ loadPositionForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const formData = new FormData(loadPositionForm);
+  const positionInput = formData.get("positionInput");
 
-  console.log("Form Data:", Object.fromEntries(formData.entries()));
+  console.log(positionInput);
 });

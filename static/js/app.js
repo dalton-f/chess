@@ -28,13 +28,14 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 var loadPositionForm = document.getElementById("loadPositionForm");
 loadPositionForm.addEventListener("submit", /*#__PURE__*/function () {
   var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(event) {
-    var formData;
+    var formData, positionInput;
     return _regenerator().w(function (_context) {
       while (1) switch (_context.n) {
         case 0:
           event.preventDefault();
           formData = new FormData(loadPositionForm);
-          console.log("Form Data:", Object.fromEntries(formData.entries()));
+          positionInput = formData.get("positionInput");
+          console.log(positionInput);
         case 1:
           return _context.a(2);
       }
