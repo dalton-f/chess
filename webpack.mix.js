@@ -11,4 +11,6 @@ mix
   .js("src/js/app.js", "static/js")
   .postCss("src/css/app.pcss", "static/css", [tailwindcss]);
 
+mix.copyDirectory("src/images", "static/images");
+
 mix.disableNotifications();
