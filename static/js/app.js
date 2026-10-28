@@ -79,10 +79,24 @@ var game = {
   halfMoveClock: 0,
   fullMoveNumber: 1
 };
+var loadPositionForm = document.getElementById("loadPositionForm");
+var positionInput = document.getElementById("positionInput");
 document.addEventListener("DOMContentLoaded", function () {
-  loadGameFromFEN(STARTING_POSITION_FEN);
-  displayBoard();
+  // "5k2/pp4p1/4pp2/1P5p/8/P2KP1P1/5P1b/2B5 w - - 0 3"
+  initializeGame();
 });
+loadPositionForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+  var formData = new FormData(loadPositionForm);
+  var fen = Object.fromEntries(formData.entries()).positionInput;
+  positionInput.value = "";
+  initializeGame(fen);
+});
+var initializeGame = function initializeGame() {
+  var fen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : STARTING_POSITION_FEN;
+  loadGameFromFEN(fen);
+  displayBoard();
+};
 var loadGameFromFEN = function loadGameFromFEN(fen) {
   var _parseFEN = parseFEN(fen),
     _parseFEN2 = _slicedToArray(_parseFEN, 6),
@@ -111,13 +125,13 @@ var displayBoard = function displayBoard() {
       var piece = game.board[index];
       var square = document.createElement("div");
       square.classList.add("flex", "aspect-square", "w-10", "md:w-20");
-
-      // Alternate light and dark squares.
+      if (index === 56) square.classList.add("rounded-tl-sm");
+      if (index === 63) square.classList.add("rounded-tr-sm");
+      if (index === 0) square.classList.add("rounded-bl-sm");
+      if (index === 7) square.classList.add("rounded-br-sm");
       var isLightSquare = (rank + file) % 2 === 0;
       square.classList.add(isLightSquare ? "bg-oregano" : "bg-solitude");
       square.dataset.square = index;
-
-      // Display the piece, if one exists.
       if (piece !== PIECES.empty) {
         var img = document.createElement("img");
         img.src = PIECE_IMAGES[piece];
