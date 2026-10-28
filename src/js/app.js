@@ -55,6 +55,7 @@ const game = {
 
 document.addEventListener("DOMContentLoaded", () => {
   loadGameFromFEN(STARTING_POSITION_FEN);
+  displayBoard();
 });
 
 const loadGameFromFEN = (fen) => {
@@ -80,6 +81,57 @@ const loadGameFromFEN = (fen) => {
   game.fullMoveNumber = fullMoveNumber;
 
   console.log(game);
+};
+
+const displayBoard = () => {
+  const PIECE_IMAGES = {
+    [PIECES.pawn | PIECES.white]: "static/images/whitePawn.svg",
+    [PIECES.knight | PIECES.white]: "static/images/whiteKnight.svg",
+    [PIECES.bishop | PIECES.white]: "static/images/whiteBishop.svg",
+    [PIECES.rook | PIECES.white]: "static/images/whiteRook.svg",
+    [PIECES.queen | PIECES.white]: "static/images/whiteQueen.svg",
+    [PIECES.king | PIECES.white]: "static/images/whiteKing.svg",
+
+    [PIECES.pawn | PIECES.black]: "static/images/blackPawn.svg",
+    [PIECES.knight | PIECES.black]: "static/images/blackKnight.svg",
+    [PIECES.bishop | PIECES.black]: "static/images/blackBishop.svg",
+    [PIECES.rook | PIECES.black]: "static/images/blackRook.svg",
+    [PIECES.queen | PIECES.black]: "static/images/blackQueen.svg",
+    [PIECES.king | PIECES.black]: "static/images/blackKing.svg",
+  };
+
+  const chessboard = document.getElementById("chessboard");
+
+  const fragment = document.createDocumentFragment();
+
+  for (let rank = 7; rank >= 0; rank--) {
+    for (let file = 0; file < 8; file++) {
+      const index = rank * 8 + file;
+      const piece = game.board[index];
+
+      const square = document.createElement("div");
+      square.classList.add("flex", "aspect-square", "w-10", "md:w-20");
+
+      // Alternate light and dark squares.
+      const isLightSquare = (rank + file) % 2 === 0;
+      square.classList.add(isLightSquare ? "bg-oregano" : "bg-solitude");
+      square.dataset.square = index;
+
+      // Display the piece, if one exists.
+      if (piece !== PIECES.empty) {
+        const img = document.createElement("img");
+
+        img.src = PIECE_IMAGES[piece];
+        img.alt = `Piece on square ${index}`;
+
+        square.appendChild(img);
+      }
+
+      fragment.appendChild(square);
+    }
+  }
+
+  chessboard.replaceChildren(fragment);
 };
 
 const parseFEN = (fen) => {

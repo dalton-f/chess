@@ -21,7 +21,11 @@ __webpack_require__.r(__webpack_exports__);
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, e) { if ("object" != _typeof(t) || !t) return t; var r; if ("undefined" != typeof Symbol && void 0 !== (r = t[Symbol.toPrimitive])) { var i = r.call(t, e || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === e ? String : Number)(t); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -77,6 +81,7 @@ var game = {
 };
 document.addEventListener("DOMContentLoaded", function () {
   loadGameFromFEN(STARTING_POSITION_FEN);
+  displayBoard();
 });
 var loadGameFromFEN = function loadGameFromFEN(fen) {
   var _parseFEN = parseFEN(fen),
@@ -94,6 +99,35 @@ var loadGameFromFEN = function loadGameFromFEN(fen) {
   game.halfMoveClock = halfMoveClock;
   game.fullMoveNumber = fullMoveNumber;
   console.log(game);
+};
+var displayBoard = function displayBoard() {
+  var _PIECE_IMAGES;
+  var PIECE_IMAGES = (_PIECE_IMAGES = {}, _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_PIECE_IMAGES, PIECES.pawn | PIECES.white, "static/images/whitePawn.svg"), PIECES.knight | PIECES.white, "static/images/whiteKnight.svg"), PIECES.bishop | PIECES.white, "static/images/whiteBishop.svg"), PIECES.rook | PIECES.white, "static/images/whiteRook.svg"), PIECES.queen | PIECES.white, "static/images/whiteQueen.svg"), PIECES.king | PIECES.white, "static/images/whiteKing.svg"), PIECES.pawn | PIECES.black, "static/images/blackPawn.svg"), PIECES.knight | PIECES.black, "static/images/blackKnight.svg"), PIECES.bishop | PIECES.black, "static/images/blackBishop.svg"), PIECES.rook | PIECES.black, "static/images/blackRook.svg"), _defineProperty(_defineProperty(_PIECE_IMAGES, PIECES.queen | PIECES.black, "static/images/blackQueen.svg"), PIECES.king | PIECES.black, "static/images/blackKing.svg"));
+  var chessboard = document.getElementById("chessboard");
+  var fragment = document.createDocumentFragment();
+  for (var rank = 7; rank >= 0; rank--) {
+    for (var file = 0; file < 8; file++) {
+      var index = rank * 8 + file;
+      var piece = game.board[index];
+      var square = document.createElement("div");
+      square.classList.add("flex", "aspect-square", "w-10", "md:w-20");
+
+      // Alternate light and dark squares.
+      var isLightSquare = (rank + file) % 2 === 0;
+      square.classList.add(isLightSquare ? "bg-oregano" : "bg-solitude");
+      square.dataset.square = index;
+
+      // Display the piece, if one exists.
+      if (piece !== PIECES.empty) {
+        var img = document.createElement("img");
+        img.src = PIECE_IMAGES[piece];
+        img.alt = "Piece on square ".concat(index);
+        square.appendChild(img);
+      }
+      fragment.appendChild(square);
+    }
+  }
+  chessboard.replaceChildren(fragment);
 };
 var parseFEN = function parseFEN(fen) {
   var EXPECTED_FIELD_COUNT = 6;
