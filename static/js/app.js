@@ -79,8 +79,10 @@ var game = {
   halfMoveClock: 0,
   fullMoveNumber: 1
 };
+var flipped = false;
 var loadPositionForm = document.getElementById("loadPositionForm");
 var positionInput = document.getElementById("positionInput");
+var rotateButton = document.getElementById("rotateButton");
 document.addEventListener("DOMContentLoaded", function () {
   // "5k2/pp4p1/4pp2/1P5p/8/P2KP1P1/5P1b/2B5 w - - 0 3"
   initializeGame();
@@ -91,6 +93,14 @@ loadPositionForm.addEventListener("submit", function (event) {
   var fen = Object.fromEntries(formData.entries()).positionInput;
   positionInput.value = "";
   initializeGame(fen);
+});
+
+// TODO: Fix displayBoard not doing rounded corners when flipped
+// TODO: better storage of flipped tracking, temp code works.
+rotateButton.addEventListener("click", function (event) {
+  event.preventDefault();
+  flipped = !flipped;
+  displayBoard(flipped);
 });
 var initializeGame = function initializeGame() {
   var fen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : STARTING_POSITION_FEN;

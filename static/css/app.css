@@ -271,6 +271,9 @@
   .gap-6 {
     gap: calc(var(--spacing) * 6);
   }
+  .rounded {
+    border-radius: 0.25rem;
+  }
   .rounded-lg {
     border-radius: var(--radius-lg);
   }
