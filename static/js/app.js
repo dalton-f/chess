@@ -116,11 +116,15 @@ var loadGameFromFEN = function loadGameFromFEN(fen) {
 };
 var displayBoard = function displayBoard() {
   var _PIECE_IMAGES;
+  var flipped = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   var PIECE_IMAGES = (_PIECE_IMAGES = {}, _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_PIECE_IMAGES, PIECES.pawn | PIECES.white, "static/images/whitePawn.svg"), PIECES.knight | PIECES.white, "static/images/whiteKnight.svg"), PIECES.bishop | PIECES.white, "static/images/whiteBishop.svg"), PIECES.rook | PIECES.white, "static/images/whiteRook.svg"), PIECES.queen | PIECES.white, "static/images/whiteQueen.svg"), PIECES.king | PIECES.white, "static/images/whiteKing.svg"), PIECES.pawn | PIECES.black, "static/images/blackPawn.svg"), PIECES.knight | PIECES.black, "static/images/blackKnight.svg"), PIECES.bishop | PIECES.black, "static/images/blackBishop.svg"), PIECES.rook | PIECES.black, "static/images/blackRook.svg"), _defineProperty(_defineProperty(_PIECE_IMAGES, PIECES.queen | PIECES.black, "static/images/blackQueen.svg"), PIECES.king | PIECES.black, "static/images/blackKing.svg"));
   var chessboard = document.getElementById("chessboard");
+  if (!chessboard) return;
   var fragment = document.createDocumentFragment();
-  for (var rank = 7; rank >= 0; rank--) {
-    for (var file = 0; file < 8; file++) {
+  for (var row = 0; row < 8; row++) {
+    for (var col = 0; col < 8; col++) {
+      var rank = flipped ? row : 7 - row;
+      var file = flipped ? 7 - col : col;
       var index = rank * 8 + file;
       var piece = game.board[index];
       var square = document.createElement("div");

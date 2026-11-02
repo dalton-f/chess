@@ -103,7 +103,7 @@ const loadGameFromFEN = (fen) => {
   console.log(game);
 };
 
-const displayBoard = () => {
+const displayBoard = (flipped = false) => {
   const PIECE_IMAGES = {
     [PIECES.pawn | PIECES.white]: "static/images/whitePawn.svg",
     [PIECES.knight | PIECES.white]: "static/images/whiteKnight.svg",
@@ -122,10 +122,15 @@ const displayBoard = () => {
 
   const chessboard = document.getElementById("chessboard");
 
+  if (!chessboard) return;
+
   const fragment = document.createDocumentFragment();
 
-  for (let rank = 7; rank >= 0; rank--) {
-    for (let file = 0; file < 8; file++) {
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 8; col++) {
+      const rank = flipped ? row : 7 - row;
+      const file = flipped ? 7 - col : col;
+
       const index = rank * 8 + file;
       const piece = game.board[index];
 
