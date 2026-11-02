@@ -20,36 +20,66 @@
 
     <script src="/static/js/app.js" defer></script>
   </head>
-  <body>
-    <main
-      class="mx-auto flex min-h-dvh max-w-xs flex-col items-center justify-center gap-6 md:max-w-3xl md:p-10"
-    >
-      <div class="grid grid-cols-8" id="chessboard"></div>
+  <body class="grid min-h-dvh place-items-center">
+    <main class="grid grid-cols-[1fr_auto_1fr] justify-center gap-4">
+      <div class="col-start-2 flex flex-col gap-6">
+        <div class="grid grid-cols-8" id="chessboard"></div>
 
-      <div class="w-full max-w-[40rem] text-lg">
-        <form class="grid gap-6 md:grid-cols-2" id="loadPositionForm">
-          <input
-            type="text"
-            name="positionInput"
-            id="positionInput"
-            class="peer rounded-lg border-2 border-white/0 bg-neutral-700 p-4 text-center transition-colors duration-300 hover:border-neutral-500 focus:border-neutral-500 focus:outline-none"
-            placeholder="Load PGN or FEN"
-            autocapitalize="off"
-            autocomplete="off"
-            autocorrect="off"
-            spellcheck="false"
-            required
-          />
+        <div class="w-full max-w-[40rem] text-lg">
+          <form class="grid gap-6 md:grid-cols-2" id="loadPositionForm">
+            <input
+              type="text"
+              name="positionInput"
+              id="positionInput"
+              class="peer rounded-lg border-2 border-white/0 bg-neutral-700 p-4 text-center transition-colors duration-300 hover:border-neutral-500 focus:border-neutral-500 focus:outline-none"
+              placeholder="Load PGN or FEN"
+              autocapitalize="off"
+              autocomplete="off"
+              autocorrect="off"
+              spellcheck="false"
+              required
+            />
 
-          <label for="positionInput" class="sr-only">Position</label>
+            <label for="positionInput" class="sr-only">Position</label>
 
-          <button
-            type="submit"
-            class="peer-not-placeholder-shown:bg-lime cursor-pointer rounded-lg border-2 border-white/0 bg-neutral-700 p-4 font-semibold text-white/40 transition-colors duration-300 peer-not-placeholder-shown:text-white hover:border-neutral-500 peer-not-placeholder-shown:hover:border-white focus:border-neutral-500 focus:outline-none peer-not-placeholder-shown:focus:border-white"
+            <button
+              type="submit"
+              class="peer-not-placeholder-shown:bg-lime cursor-pointer rounded-lg border-2 border-white/0 bg-neutral-700 p-4 font-semibold text-white/40 transition-colors duration-300 peer-not-placeholder-shown:text-white hover:border-neutral-500 peer-not-placeholder-shown:hover:border-white focus:border-neutral-500 focus:outline-none peer-not-placeholder-shown:focus:border-white"
+            >
+              Load
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <button class="cursor-pointer" id="settingsButton">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 640 640"
+            width="16"
+            height="16"
           >
-            Load
-          </button>
-        </form>
+            <path
+              fill="hsl(221, 15%, 56%)"
+              d="M259.1 73.5c3-14.8 16.1-25.5 31.3-25.5h59.8c15.2 0 28.3 10.7 31.3 25.5l14.5 70c14.1 6 27.3 13.7 39.3 22.8l67.8-22.5c14.4-4.8 30.2 1.2 37.8 14.4l29.9 51.8c7.6 13.2 4.9 29.8-6.5 39.9L511 297.3c.9 7.4 1.3 15 1.3 22.7s-.5 15.3-1.3 22.7l53.4 47.5c11.4 10.1 14 26.8 6.5 39.9L541 481.9c-7.6 13.1-23.4 19.2-37.8 14.4l-67.8-22.5c-12.1 9.1-25.3 16.7-39.3 22.8l-14.4 69.9c-3.1 14.9-16.2 25.5-31.3 25.5h-59.8c-15.2 0-28.3-10.7-31.3-25.5l-14.4-69.9c-14.1-6-27.2-13.7-39.3-22.8l-68.1 22.5c-14.4 4.8-30.2-1.2-37.8-14.4l-29.9-51.8c-7.6-13.2-4.9-29.8 6.5-39.9l53.4-47.5c-.9-7.4-1.3-15-1.3-22.7s.5-15.3 1.3-22.7l-53.4-47.5c-11.4-10.1-14-26.8-6.5-39.9l29.9-51.8c7.6-13.2 23.4-19.2 37.8-14.4l67.8 22.5c12.1-9.1 25.3-16.7 39.3-22.8zM320.3 400c44.2-.2 79.9-36.1 79.7-80.3s-36.1-79.9-80.3-79.7-79.9 36.1-79.7 80.3 36.1 79.9 80.3 79.7"
+            />
+          </svg>
+        </button>
+
+        <button class="cursor-pointer" id="rotateButton">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 640 640"
+            width="16"
+            height="16"
+          >
+            <path
+              fill="hsl(221, 15%, 56%)"
+              d="M544.1 256h7.9c13.3 0 24-10.7 24-24V88c0-9.7-5.8-18.5-14.8-22.2S541.9 64.2 535 71l-51.7 51.8C439 86.1 382 64 320 64 191 64 84.3 159.4 66.6 283.5c-2.5 17.5 9.6 33.7 27.1 36.2s33.7-9.7 36.2-27.1C143.2 199.5 223.3 128 320 128c44.4 0 85.2 15 117.7 40.3L391 215c-6.9 6.9-8.9 17.2-5.2 26.2S398.3 256 408 256zm29.4 100.5c2.5-17.5-9.7-33.7-27.1-36.2s-33.7 9.7-36.2 27.1c-13.3 93-93.4 164.5-190.1 164.5-44.4 0-85.2-15-117.7-40.3L249 425c6.9-6.9 8.9-17.2 5.2-26.2S241.7 384 232 384H88c-13.3 0-24 10.7-24 24v144c0 9.7 5.8 18.5 14.8 22.2s19.3 1.6 26.2-5.2l51.8-51.8C201 553.9 258 576 320 576c129 0 235.7-95.4 253.4-219.5z"
+            />
+          </svg>
+        </button>
       </div>
     </main>
   </body>
