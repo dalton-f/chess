@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="en" class="font-montserrat bg-diesel text-white antialiased">
+<html
+  lang="en"
+  class="font-montserrat bg-diesel text-white antialiased"
+  data-theme="green"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,12 +24,12 @@
 
     <script src="/static/js/app.js" defer></script>
   </head>
-  <body class="grid min-h-dvh place-items-center">
+  <body class="grid min-h-dvh place-items-center text-lg">
     <main class="grid grid-cols-[1fr_auto_1fr] justify-center gap-4">
       <div class="col-start-2 flex flex-col gap-6">
         <div class="grid grid-cols-8" id="chessboard"></div>
 
-        <div class="w-full max-w-[40rem] text-lg">
+        <div class="w-full max-w-[40rem]">
           <form class="grid gap-6 md:grid-cols-2" id="loadPositionForm">
             <input
               type="text"
@@ -44,7 +48,7 @@
 
             <button
               type="submit"
-              class="peer-not-placeholder-shown:bg-lime cursor-pointer rounded-lg border-2 border-white/0 bg-neutral-700 p-4 font-semibold text-white/40 transition-colors duration-300 peer-not-placeholder-shown:text-white hover:border-neutral-500 peer-not-placeholder-shown:hover:border-white focus:border-neutral-500 focus:outline-none peer-not-placeholder-shown:focus:border-white"
+              class="peer-not-placeholder-shown:bg-lime cursor-pointer rounded-lg border-2 border-white/0 bg-neutral-700 p-4 text-white/40 transition-colors duration-300 peer-not-placeholder-shown:text-white hover:border-neutral-500 peer-not-placeholder-shown:hover:border-white focus:border-neutral-500 focus:outline-none peer-not-placeholder-shown:focus:border-white"
             >
               Load
             </button>
@@ -53,7 +57,11 @@
       </div>
 
       <div class="flex flex-col gap-4">
-        <button class="cursor-pointer" id="settingsButton">
+        <button
+          class="cursor-pointer"
+          id="settingsButton"
+          aria-label="Open Settings"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 640 640"
@@ -67,7 +75,11 @@
           </svg>
         </button>
 
-        <button class="cursor-pointer" id="rotateButton">
+        <button
+          class="cursor-pointer"
+          id="rotateButton"
+          aria-label="Flip Board"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 640 640"
@@ -81,6 +93,61 @@
           </svg>
         </button>
       </div>
+
+      <dialog
+        class="m-auto translate-y-[50px] rounded-lg bg-neutral-700 p-4 text-white opacity-0 transition-[opacity,display,overlay,translate] transition-discrete duration-500 backdrop:cursor-pointer backdrop:bg-black/50 backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition-[opacity] backdrop:duration-300 open:translate-none open:opacity-100 open:backdrop:opacity-100 starting:open:translate-y-[-50px] starting:open:opacity-0 starting:open:backdrop:opacity-0"
+        id="settingsModal"
+        closedby="any"
+      >
+        <p>Theme</p>
+
+        <div class="grid grid-cols-3 items-center justify-center gap-4">
+          <button
+            class="outline-lime flex cursor-pointer rounded-sm outline-6"
+            aria-label="Select Green Theme"
+            data-theme="green"
+          >
+            <span class="bg-primary block aspect-square w-7.5"></span>
+            <span class="bg-secondary block aspect-square w-7.5"></span>
+          </button>
+
+          <button
+            class="flex cursor-pointer rounded-sm"
+            aria-label="Select Wood Theme"
+            data-theme="wood"
+          >
+            <span class="bg-primary block aspect-square w-7.5"></span>
+            <span class="bg-secondary block aspect-square w-7.5"></span>
+          </button>
+
+          <button
+            class="flex cursor-pointer rounded-sm"
+            aria-label="Select Ocean Theme"
+            data-theme="ocean"
+          >
+            <span class="bg-primary block aspect-square w-7.5"></span>
+            <span class="bg-secondary block aspect-square w-7.5"></span>
+          </button>
+
+          <button
+            class="flex cursor-pointer rounded-sm"
+            aria-label="Select Autumn Theme"
+            data-theme="autumn"
+          >
+            <span class="bg-primary block aspect-square w-7.5"></span>
+            <span class="bg-secondary block aspect-square w-7.5"></span>
+          </button>
+
+          <button
+            class="flex cursor-pointer rounded-sm"
+            aria-label="Select Mono Theme"
+            data-theme="mono"
+          >
+            <span class="bg-primary block aspect-square w-7.5"></span>
+            <span class="bg-secondary block aspect-square w-7.5"></span>
+          </button>
+        </div>
+      </dialog>
     </main>
   </body>
 </html>

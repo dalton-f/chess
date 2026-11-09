@@ -44,6 +44,8 @@ const CASTLING_RIGHTS = {
 
 const BOARD_SIZE = 64;
 
+const SETTINGS_STORAGE_KEY = "chess-ui-settings";
+
 const game = {
   board: new Array(BOARD_SIZE).fill(PIECES.empty),
   activeColor: PIECES.white,
@@ -53,14 +55,37 @@ const game = {
   fullMoveNumber: 1,
 };
 
-let flipped = false;
+const loadUISettings = () => {
+  const savedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+
+  if (!savedSettings) return null;
+
+  try {
+    return JSON.parse(savedSettings);
+  } catch {
+    return null;
+  }
+};
+
+// coordinatesVisible: true,
+// legalMovesVisible: true,
+// lastMoveHighlight: true,
+const uiState = {
+  boardFlipped: false,
+  theme: "green",
+  ...loadUISettings(),
+};
 
 const loadPositionForm = document.getElementById("loadPositionForm");
 const positionInput = document.getElementById("positionInput");
 const rotateButton = document.getElementById("rotateButton");
+const settingsButton = document.getElementById("settingsButton");
+const settingsModal = document.getElementById("settingsModal");
+const themeButtons = document.querySelectorAll("button[data-theme]");
 
 document.addEventListener("DOMContentLoaded", () => {
   // "5k2/pp4p1/4pp2/1P5p/8/P2KP1P1/5P1b/2B5 w - - 0 3"
+  applyUISettings();
   initializeGame();
 });
 
@@ -77,13 +102,38 @@ loadPositionForm.addEventListener("submit", (event) => {
 });
 
 // TODO: Fix displayBoard not doing rounded corners when flipped
-// TODO: better storage of flipped tracking, temp code works.
 rotateButton.addEventListener("click", (event) => {
   event.preventDefault();
 
-  flipped = !flipped;
+  uiState.boardFlipped = !uiState.boardFlipped;
 
-  displayBoard(flipped);
+  displayBoard();
+  saveUISettings();
+});
+
+settingsButton.addEventListener("click", () => {
+  settingsModal.showModal();
+});
+
+themeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const selectedTheme = button.dataset.theme;
+
+    uiState.theme = selectedTheme;
+
+    // Change theme
+    document.documentElement.dataset.theme = button.dataset.theme;
+
+    // Remove selected styling from all buttons
+    themeButtons.forEach((btn) => {
+      btn.classList.remove("outline-lime", "outline-6");
+    });
+
+    // Apply selected styling to clicked button
+    button.classList.add("outline-lime", "outline-6");
+
+    saveUISettings();
+  });
 });
 
 const initializeGame = (fen = STARTING_POSITION_FEN) => {
@@ -116,7 +166,7 @@ const loadGameFromFEN = (fen) => {
   console.log(game);
 };
 
-const displayBoard = (flipped = false) => {
+const displayBoard = () => {
   const PIECE_IMAGES = {
     [PIECES.pawn | PIECES.white]: "static/images/whitePawn.svg",
     [PIECES.knight | PIECES.white]: "static/images/whiteKnight.svg",
@@ -139,6 +189,8 @@ const displayBoard = (flipped = false) => {
 
   const fragment = document.createDocumentFragment();
 
+  const flipped = uiState.boardFlipped;
+
   for (let row = 0; row < 8; row++) {
     for (let col = 0; col < 8; col++) {
       const rank = flipped ? row : 7 - row;
@@ -155,8 +207,8 @@ const displayBoard = (flipped = false) => {
       if (index === 0) square.classList.add("rounded-bl-sm");
       if (index === 7) square.classList.add("rounded-br-sm");
 
-      const isLightSquare = (rank + file) % 2 === 0;
-      square.classList.add(isLightSquare ? "bg-oregano" : "bg-solitude");
+      const isLightSquare = (rank + file) % 2 !== 0;
+      square.classList.add(isLightSquare ? "bg-primary" : "bg-secondary");
       square.dataset.square = index;
 
       if (piece !== PIECES.empty) {
@@ -305,4 +357,21 @@ const coordinateToIndex = (coordinate) => {
   const [file, rank] = coordinate.split("");
 
   return ZERO_INDEXED_RANKS[rank] * 8 + ZERO_INDEXED_FILES[file];
+};
+
+const saveUISettings = () => {
+  localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(uiState));
+};
+
+const applyUISettings = () => {
+  // Restore theme
+  document.documentElement.dataset.theme = uiState.theme;
+
+  // Restore selected theme button
+  themeButtons.forEach((button) => {
+    const isSelected = button.dataset.theme === uiState.theme;
+
+    button.classList.toggle("outline-lime", isSelected);
+    button.classList.toggle("outline-6", isSelected);
+  });
 };

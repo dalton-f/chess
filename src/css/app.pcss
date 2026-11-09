@@ -2,11 +2,38 @@
 
 @theme {
   --color-diesel: #302e2b;
-  --color-oregano: #739552;
-  --color-solitude: #ebecd0;
-  --color-walnut: #b58863;
-  --color-pine: #f0d9b5;
+
   --color-lime: #77ae4b;
 
+  --color-primary: #fff;
+  --color-secondary: #000;
+
   --font-montserrat: "Montserrat", sans-serif;
+}
+
+@layer base {
+  [data-theme="green"] {
+    --color-primary: #ebecd0;
+    --color-secondary: #739552;
+  }
+
+  [data-theme="wood"] {
+    --color-primary: #f0d9b5;
+    --color-secondary: #b58863;
+  }
+
+  [data-theme="ocean"] {
+    --color-primary: #dee3e6;
+    --color-secondary: #6b91a8;
+  }
+
+  [data-theme="autumn"] {
+    --color-primary: #ead5b5;
+    --color-secondary: #a65e3b;
+  }
+
+  [data-theme="mono"] {
+    --color-primary: #e5e5e5;
+    --color-secondary: #777777;
+  }
 }
