@@ -123,7 +123,6 @@ rotateButton.addEventListener("click", function (event) {
   event.preventDefault();
   uiState.boardFlipped = !uiState.boardFlipped;
   displayBoard();
-  saveUISettings();
 });
 settingsButton.addEventListener("click", function () {
   settingsModal.showModal();

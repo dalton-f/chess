@@ -108,7 +108,6 @@ rotateButton.addEventListener("click", (event) => {
   uiState.boardFlipped = !uiState.boardFlipped;
 
   displayBoard();
-  saveUISettings();
 });
 
 settingsButton.addEventListener("click", () => {
