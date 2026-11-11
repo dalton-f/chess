@@ -247,6 +247,9 @@
   .grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+  .grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
   .grid-cols-8 {
     grid-template-columns: repeat(8, minmax(0, 1fr));
   }
@@ -482,6 +485,10 @@
   [data-theme="mono"] {
     --color-primary: #e5e5e5;
     --color-secondary: #777777;
+  }
+  [data-theme="princess"] {
+    --color-primary: #fff0f5;
+    --color-secondary: #f4a6c1;
   }
 }
 @property --tw-translate-x {
