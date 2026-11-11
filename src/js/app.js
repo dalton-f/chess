@@ -101,7 +101,6 @@ loadPositionForm.addEventListener("submit", (event) => {
   initializeGame(fen);
 });
 
-// TODO: Fix displayBoard not doing rounded corners when flipped
 rotateButton.addEventListener("click", (event) => {
   event.preventDefault();
 
@@ -201,10 +200,10 @@ const displayBoard = () => {
       const square = document.createElement("div");
       square.classList.add("flex", "aspect-square", "w-10", "md:w-20");
 
-      if (index === 56) square.classList.add("rounded-tl-sm");
-      if (index === 63) square.classList.add("rounded-tr-sm");
-      if (index === 0) square.classList.add("rounded-bl-sm");
-      if (index === 7) square.classList.add("rounded-br-sm");
+      if (row === 0 && col === 0) square.classList.add("rounded-tl-sm");
+      if (row === 0 && col === 7) square.classList.add("rounded-tr-sm");
+      if (row === 7 && col === 0) square.classList.add("rounded-bl-sm");
+      if (row === 7 && col === 7) square.classList.add("rounded-br-sm");
 
       const isLightSquare = (rank + file) % 2 !== 0;
       square.classList.add(isLightSquare ? "bg-primary" : "bg-secondary");
