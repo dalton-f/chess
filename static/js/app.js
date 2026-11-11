@@ -146,6 +146,7 @@ themeButtons.forEach(function (button) {
 var initializeGame = function initializeGame() {
   var fen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : STARTING_POSITION_FEN;
   loadGameFromFEN(fen);
+  uiState.boardFlipped = game.activeColor === PIECES.black;
   displayBoard();
 };
 var loadGameFromFEN = function loadGameFromFEN(fen) {

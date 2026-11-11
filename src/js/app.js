@@ -136,6 +136,9 @@ themeButtons.forEach((button) => {
 
 const initializeGame = (fen = STARTING_POSITION_FEN) => {
   loadGameFromFEN(fen);
+
+  uiState.boardFlipped = game.activeColor === PIECES.black;
+
   displayBoard();
 };
 
