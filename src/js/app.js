@@ -85,6 +85,7 @@ const themeButtons = document.querySelectorAll("button[data-theme]");
 
 document.addEventListener("DOMContentLoaded", () => {
   // "5k2/pp4p1/4pp2/1P5p/8/P2KP1P1/5P1b/2B5 w - - 0 3"
+  // 8/8/8/8/8/8/8/8 w - - 0 1
   applyUISettings();
   initializeGame();
 });
@@ -201,7 +202,13 @@ const displayBoard = () => {
       const piece = game.board[index];
 
       const square = document.createElement("div");
-      square.classList.add("flex", "aspect-square", "w-10", "md:w-20");
+      square.classList.add(
+        "flex",
+        "aspect-square",
+        "w-10",
+        "md:w-20",
+        "relative",
+      );
 
       if (row === 0 && col === 0) square.classList.add("rounded-tl-sm");
       if (row === 0 && col === 7) square.classList.add("rounded-tr-sm");
@@ -212,11 +219,45 @@ const displayBoard = () => {
       square.classList.add(isLightSquare ? "bg-primary" : "bg-secondary");
       square.dataset.square = index;
 
+      const rankCoordinate = document.createElement("p");
+      rankCoordinate.classList.add(
+        "absolute",
+        isLightSquare ? "text-secondary" : "text-primary",
+        "left-1.5",
+        "top-1.5",
+        "font-semibold",
+        "text-sm",
+      );
+
+      rankCoordinate.innerHTML = rank + 1;
+      rankCoordinate.ariaHidden = true;
+
+      // TODO: add debug mode
+      // TODO: clean all this up so it doesnt repeat code
+
+      if (col === 0) square.appendChild(rankCoordinate);
+
+      const fileCoordinate = document.createElement("p");
+      fileCoordinate.classList.add(
+        "absolute",
+        isLightSquare ? "text-secondary" : "text-primary",
+        "right-1.5",
+        "bottom-1.5",
+        "font-semibold",
+        "text-sm",
+      );
+
+      fileCoordinate.innerHTML = String.fromCharCode(96 + (file + 1));
+      fileCoordinate.ariaHidden = true;
+
+      if (row === 7) square.appendChild(fileCoordinate);
+
       if (piece !== PIECES.empty) {
         const img = document.createElement("img");
 
         img.src = PIECE_IMAGES[piece];
         img.alt = `Piece on square ${index}`;
+        img.classList.add("relative", "z-999");
 
         square.appendChild(img);
       }
@@ -376,3 +417,29 @@ const applyUISettings = () => {
     button.classList.toggle("outline-6", isSelected);
   });
 };
+
+//  occupancyBitboards: {
+//     white: {
+//       pawns: 0n,
+//       knights: 0n,
+//       bishops: 0n,
+//       rooks: 0n,
+//       queens: 0n,
+//       king: 0n,
+//     },
+//     black: {
+//       pawns: 0n,
+//       knights: 0n,
+//       bishops: 0n,
+//       rooks: 0n,
+//       queens: 0n,
+//       king: 0n,
+//     },
+//     whitePieces: 0n,
+//     blackPieces: 0n,
+//     allPieces: 0n,
+//   },
+
+// occupancyBitboards[color][type] |= bit;
+// occupancyBitboards[`${color}Pieces`] |= bit;
+// occupancyBitboards.allPieces |= bit;

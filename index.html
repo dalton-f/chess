@@ -95,66 +95,68 @@
       </div>
 
       <dialog
-        class="m-auto translate-y-[50px] rounded-lg bg-neutral-700 p-4 text-white opacity-0 transition-[opacity,display,overlay,translate] transition-discrete duration-500 backdrop:cursor-pointer backdrop:bg-black/50 backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition-[opacity] backdrop:duration-300 open:translate-none open:opacity-100 open:backdrop:opacity-100 starting:open:translate-y-[-50px] starting:open:opacity-0 starting:open:backdrop:opacity-0"
+        class="m-auto translate-y-[50px] rounded-lg bg-neutral-700 text-white opacity-0 transition-[opacity,display,overlay,translate] transition-discrete duration-500 backdrop:cursor-pointer backdrop:bg-black/50 backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition-[opacity] backdrop:duration-300 open:translate-none open:opacity-100 open:backdrop:opacity-100 starting:open:translate-y-[-50px] starting:open:opacity-0 starting:open:backdrop:opacity-0"
         id="settingsModal"
         closedby="any"
       >
-        <p>Theme</p>
+        <div class="flex flex-col gap-4 p-6">
+          <!-- <p>Theme</p> -->
 
-        <div class="grid grid-cols-3 items-center justify-center gap-4">
-          <button
-            class="outline-lime flex cursor-pointer rounded-sm outline-6"
-            aria-label="Select Green Theme"
-            data-theme="green"
-          >
-            <span class="bg-primary block aspect-square w-7.5"></span>
-            <span class="bg-secondary block aspect-square w-7.5"></span>
-          </button>
+          <div class="grid grid-cols-3 items-center justify-center gap-4">
+            <button
+              class="outline-lime flex cursor-pointer rounded-sm outline-6"
+              aria-label="Select Green Theme"
+              data-theme="green"
+            >
+              <span class="bg-primary block aspect-square w-7.5"></span>
+              <span class="bg-secondary block aspect-square w-7.5"></span>
+            </button>
 
-          <button
-            class="flex cursor-pointer rounded-sm"
-            aria-label="Select Wood Theme"
-            data-theme="wood"
-          >
-            <span class="bg-primary block aspect-square w-7.5"></span>
-            <span class="bg-secondary block aspect-square w-7.5"></span>
-          </button>
+            <button
+              class="flex cursor-pointer rounded-sm"
+              aria-label="Select Wood Theme"
+              data-theme="wood"
+            >
+              <span class="bg-primary block aspect-square w-7.5"></span>
+              <span class="bg-secondary block aspect-square w-7.5"></span>
+            </button>
 
-          <button
-            class="flex cursor-pointer rounded-sm"
-            aria-label="Select Ocean Theme"
-            data-theme="ocean"
-          >
-            <span class="bg-primary block aspect-square w-7.5"></span>
-            <span class="bg-secondary block aspect-square w-7.5"></span>
-          </button>
+            <button
+              class="flex cursor-pointer rounded-sm"
+              aria-label="Select Ocean Theme"
+              data-theme="ocean"
+            >
+              <span class="bg-primary block aspect-square w-7.5"></span>
+              <span class="bg-secondary block aspect-square w-7.5"></span>
+            </button>
 
-          <button
-            class="flex cursor-pointer rounded-sm"
-            aria-label="Select Autumn Theme"
-            data-theme="autumn"
-          >
-            <span class="bg-primary block aspect-square w-7.5"></span>
-            <span class="bg-secondary block aspect-square w-7.5"></span>
-          </button>
+            <button
+              class="flex cursor-pointer rounded-sm"
+              aria-label="Select Autumn Theme"
+              data-theme="autumn"
+            >
+              <span class="bg-primary block aspect-square w-7.5"></span>
+              <span class="bg-secondary block aspect-square w-7.5"></span>
+            </button>
 
-          <button
-            class="flex cursor-pointer rounded-sm"
-            aria-label="Select Mono Theme"
-            data-theme="mono"
-          >
-            <span class="bg-primary block aspect-square w-7.5"></span>
-            <span class="bg-secondary block aspect-square w-7.5"></span>
-          </button>
+            <button
+              class="flex cursor-pointer rounded-sm"
+              aria-label="Select Mono Theme"
+              data-theme="mono"
+            >
+              <span class="bg-primary block aspect-square w-7.5"></span>
+              <span class="bg-secondary block aspect-square w-7.5"></span>
+            </button>
 
-          <button
-            class="flex cursor-pointer rounded-sm"
-            aria-label="Select Princess Theme"
-            data-theme="princess"
-          >
-            <span class="bg-primary block aspect-square w-7.5"></span>
-            <span class="bg-secondary block aspect-square w-7.5"></span>
-          </button>
+            <button
+              class="flex cursor-pointer rounded-sm"
+              aria-label="Select Princess Theme"
+              data-theme="princess"
+            >
+              <span class="bg-primary block aspect-square w-7.5"></span>
+              <span class="bg-secondary block aspect-square w-7.5"></span>
+            </button>
+          </div>
         </div>
       </dialog>
     </main>
